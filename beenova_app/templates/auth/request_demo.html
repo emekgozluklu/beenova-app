@@ -1,0 +1,38 @@
+ {% extends 'layout.html' %}
+{% set active_page = "request_demo" %}
+
+{% block title %}
+Request Demo
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% from "render_form_field.html" import render_field %}
+
+{% block content %}
+    <div class="container">
+        <main role="main" class="col-md ml-sm-auto col-lg" style="margin-top: 20px;">
+            <h1 class="h2">Request Demo</h1><hr/>
+
+
+            {% if error %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  <strong>Whoops!</strong> {{ error }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            {% endif %}
+            <form id="requestDemoForm" class="form form-login" method="POST" action="{{ url_for("auth.request_demo") }}" role="form">
+                {{ form.hidden_tag() }}
+                {{ render_field(form.first_name, placeholder="Name") }}
+                {{ render_field(form.last_name, placeholder="Surname") }}
+                {{ render_field(form.email, placeholder="Email") }}
+                {{ render_field(form.message, placeholder="Your message...") }}
+                <p><input class="btn btn-dark btn-submit btn-dark" type="submit" value="Send Request"></p>
+            </form>
+        </main>
+
+    </div>
+{% endblock %}
