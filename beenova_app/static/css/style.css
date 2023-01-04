@@ -1,0 +1,12 @@
+.nav-link {
+    font-size: 1.4em;
+}
+
+#carouselIndex{
+    margin-top: 4rem;
+}
+
+.copyleft {
+  display:inline-block;
+  transform: rotate(180deg);
+}
