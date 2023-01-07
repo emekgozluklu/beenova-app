@@ -33,6 +33,9 @@
                     <li class="nav-item {{ 'active' if active_page == 'request_demo' else '' }}">
                         <a class="nav-link" href="{{ url_for("auth.request_demo") }}">Request Demo <span class="sr-only"></span></a>
                     </li>
+                    <li class="nav-item {{ 'active' if active_page == 'create_company' else '' }}">
+                        <a class="nav-link" href="{{ url_for("admin.register_company") }}">Register Company <span class="sr-only"></span></a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for("auth.logout") }}">Log out </a>
                     </li>

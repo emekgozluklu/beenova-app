@@ -25,3 +25,22 @@ class RequestDemoForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(RequestDemoForm, self).__init__(*args, **kwargs)
+
+
+class RegisterCompanyForm(FlaskForm):
+    company_name = StringField('Company Name', validators=[DataRequired(), Length(min=3, max=32)],
+                             render_kw={'class': 'form-control'})
+
+    # responsible employee form
+    first_name = StringField('First Name', validators=[DataRequired(), Length(min=3, max=32)],
+                             render_kw={'class': 'form-control'})
+    last_name = StringField('Last Name', validators=[DataRequired(), Length(min=3, max=32)],
+                            render_kw={'class': 'form-control'})
+    email = StringField('Company Email', validators=[DataRequired(), Length(1, 64), Email()],
+                        render_kw={'class': 'form-control'})
+
+    phone_number = StringField('Phone Number', validators=[DataRequired(), Length(min=3, max=32)],
+                                render_kw={'class': 'form-control'})
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterCompanyForm, self).__init__(*args, **kwargs)
