@@ -1,0 +1,41 @@
+ {% extends 'layout.html' %}
+{% set active_page = "register_employee" %}
+
+{% block title %}
+Register Employee
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% from "render_form_field.html" import render_field %}
+
+{% block content %}
+    <div class="container">
+        <main role="main" class="col-md ml-sm-auto col-lg" style="margin-top: 20px;">
+            <h1 class="h2">Register an Employee</h1><hr/>
+
+
+            {% if error %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  <strong>Whoops!</strong> {{ error }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+            {% endif %}
+            <form id="registerEmployeeForm" class="form form-register-company" method="POST" action="{{ url_for("employees.register_employee") }}" role="form">
+
+                {{ form.hidden_tag() }}
+                {{ render_field(form.first_name, placeholder="") }}<br>
+                {{ render_field(form.last_name, placeholder="") }}<br>
+                {{ render_field(form.email, placeholder="") }}<br>
+                {{ render_field(form.phone_number, placeholder="+49 XXX XXX XXXX") }}<br>
+                {{ render_field(form.is_company_admin) }}<br>
+
+                <p><input class="btn btn-dark btn-submit btn-dark" type="submit" value="Register"></p>
+            </form>
+        </main>
+
+    </div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from flask import Flask
-from beenova_app import views, auth, admin
+from beenova_app import views, auth, admin, employees
 import os
 
 
@@ -24,6 +24,7 @@ def create_app(test_config=None):
     app.add_url_rule("/", view_func=views.index)
     app.register_blueprint(auth.bp)
     app.register_blueprint(admin.bp)
+    app.register_blueprint(employees.bp)
 
     from . import db
     db.init_app(app)

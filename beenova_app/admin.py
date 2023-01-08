@@ -21,17 +21,22 @@ def register_company():
             error = "Please fill all required fields."
         if error is None:
             db_operator = DBOperator()
+
             # register employee
-            db_operator.register_employee(
-                first_name,
-                last_name,
-                email,
-                phone_number,
+            db_operator.create_employee(
+                first_name=first_name,
+                last_name=last_name,
+                created_by=session.get('user_id') if 'user_id' in session else 0,
+                username=email,
+                email=email,
+                company=None,
+                phone_number=phone_number,
+                is_admin=0,
                 is_company_admin=1,
-                created_by=session.get('user_id') if 'user_id' in session else 0
+                is_activated=0
             )
 
-            company_admin_id = db_operator.get_employee_id_by_email(email)["id"]
+            company_admin_id = db_operator.get_employee_by_email(email)["id"]
 
             try:
                 # register company
@@ -39,9 +44,14 @@ def register_company():
                     name=company_name,
                     admin_id=company_admin_id,
                 )
+
+                # set company as employee's company
+                company_id = db_operator.get_company_by_name(company_name)["id"]
+                db_operator.update_employee_with_id(company_admin_id, company=company_id)
+
             except Exception as e:
                 db_operator.delete_employee_by_id(company_admin_id)
-                render_template('admin/register_company.html', form=form, error=error)
+                render_template('admin/register_company.html', form=form, error=e)
 
             return redirect(url_for("index"))
 
