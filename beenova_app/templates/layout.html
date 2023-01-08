@@ -23,6 +23,41 @@
         <span class="navbar-toggler-icon"></span>
     </button>
         <div class="collapse navbar-collapse" id="navbarNav">
+
+            {% if "user_id" in session %}
+                {%  if session.user_is_admin %}
+                <ul class="navbar-nav">
+                    <li class="nav-item {{ 'active' if active_page == 'homepage' else '' }}">
+                        <a class="nav-link" href="{{ url_for("index") }}">Homepage <span class="sr-only"></span></a>
+                    </li>
+                    <li class="nav-item {{ 'active' if active_page == 'create_company' else '' }}">
+                        <a class="nav-link" href="{{ url_for("admin.register_company") }}">Register Company <span class="sr-only"></span></a>
+                    </li>
+{#
+                    <li class="nav-item {{ 'active' if active_page == 'register_employee' else '' }}">
+                        <a class="nav-link" href="{{ url_for("employees.register_employee") }}">Register Employee <span class="sr-only"></span></a>
+                    </li>
+#}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for("auth.logout") }}">Log out </a>
+                    </li>
+                </ul>
+                {% else %}
+                <ul class="navbar-nav">
+                    <li class="nav-item {{ 'active' if active_page == 'homepage' else '' }}">
+                        <a class="nav-link" href="{{ url_for("index") }}">Homepage <span class="sr-only"></span></a>
+                    </li>
+                    <li class="nav-item {{ 'active' if active_page == 'register_employee' else '' }}">
+                        <a class="nav-link" href="{{ url_for("employees.register_employee") }}">Register Employee <span class="sr-only"></span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for("auth.logout") }}">Log out </a>
+                    </li>
+
+                </ul>
+                {% endif %}
+
+            {% else %}
                 <ul class="navbar-nav">
                     <li class="nav-item {{ 'active' if active_page == 'homepage' else '' }}">
                         <a class="nav-link" href="{{ url_for("index") }}">Homepage <span class="sr-only"></span></a>
@@ -33,17 +68,8 @@
                     <li class="nav-item {{ 'active' if active_page == 'request_demo' else '' }}">
                         <a class="nav-link" href="{{ url_for("auth.request_demo") }}">Request Demo <span class="sr-only"></span></a>
                     </li>
-                    <li class="nav-item {{ 'active' if active_page == 'create_company' else '' }}">
-                        <a class="nav-link" href="{{ url_for("admin.register_company") }}">Register Company <span class="sr-only"></span></a>
-                    </li>
-                    <li class="nav-item {{ 'active' if active_page == 'register_employee' else '' }}">
-                        <a class="nav-link" href="{{ url_for("employees.register_employee") }}">Register Employee <span class="sr-only"></span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for("auth.logout") }}">Log out </a>
-                    </li>
-
                 </ul>
+            {% endif %}
         </div>
   </div>
 </nav>

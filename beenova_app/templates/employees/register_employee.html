@@ -32,6 +32,8 @@ Register Employee
                 {{ render_field(form.email, placeholder="") }}<br>
                 {{ render_field(form.phone_number, placeholder="+49 XXX XXX XXXX") }}<br>
                 {{ render_field(form.is_company_admin) }}<br>
+                {{ render_field(form.password, placeholder="") }}<br>
+                {{ render_field(form.confirm, placeholder="") }}<br>
 
                 <p><input class="btn btn-dark btn-submit btn-dark" type="submit" value="Register"></p>
             </form>

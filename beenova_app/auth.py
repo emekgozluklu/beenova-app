@@ -1,5 +1,8 @@
 import functools
 from flask import Blueprint, g, redirect, render_template, session, url_for
+from werkzeug.security import check_password_hash
+
+from beenova_app.db_queries import DBOperator
 from beenova_app.forms import RequestDemoForm, LoginForm
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -56,23 +59,32 @@ def request_demo():
 def login():
     form = LoginForm()
     error = None
+    db_operator = DBOperator()
     if form.validate_on_submit():
         email = form.email.data
         password = form.password.data
 
-        user = 1  # get user from database
+        user = db_operator.get_employee_by_email(email)
 
         if user is None:
             error = "User does not exist!"
-
-        # check if the password is correct
+        elif not check_password_hash(user['password_hash'], password):
+            error = "Incorrect password!"
 
         if error is None:
             session.clear()
-            session["user_id"] = 1
-            # set user session variables
+            session["user_id"] = user["id"]
+            session["user_is_admin"] = user["is_admin"]
+            session["user_is_company_admin"] = user["is_company_admin"]
+            session["user_company_id"] = user["company"]
 
-            return redirect(url_for("index"))
+            if session["user_is_admin"]:
+                return redirect(url_for("index"))
+                # return redirect(url_for("admin.index"))
+            else:
+                return redirect(url_for("index"))
+                # return redirect(url_for("employee.index"))
+
     return render_template("auth/login.html", form=form, error=error)
 
 

@@ -6,15 +6,15 @@ class DBOperator:
         self.db = get_db()
 
     # employee operations
-    def create_employee(self, first_name, last_name, created_by, username, email, company, phone_number=None,
-                        is_admin=0, is_company_admin=0, is_activated=0):
+    def create_employee(self, first_name, last_name, created_by, username, email, company, password_hash,
+                        phone_number=None, is_admin=0, is_company_admin=0, is_activated=0):
         query = """ 
-            INSERT INTO employee (first_name, last_name, username, email, company, phone_number, is_admin, 
-                                  is_company_admin, is_activated, created_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO employee (first_name, last_name, username, email, company, password_hash, phone_number, 
+                                is_admin, is_company_admin, is_activated, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """
 
-        self.db.execute(query, (first_name, last_name, username, email, company, phone_number, is_admin,
+        self.db.execute(query, (first_name, last_name, username, email, company, password_hash, phone_number, is_admin,
                                 is_company_admin, is_activated, created_by))
         self.db.commit()
 

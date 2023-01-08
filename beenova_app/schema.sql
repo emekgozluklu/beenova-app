@@ -8,6 +8,7 @@ CREATE TABLE employee (
   email TEXT UNIQUE NOT NULL,
   company INTEGER,
   phone_number TEXT,
+  password_hash TEXT not null,
   is_admin INTEGER NOT NULL,
   is_company_admin INTEGER NOT NULL,
   is_activated INTEGER NOT NULL,

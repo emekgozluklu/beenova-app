@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import (
     StringField, PasswordField, BooleanField, SubmitField, SelectField, FileField, TextAreaField, FloatField
 )
-from wtforms.validators import DataRequired, Length, Email
+from wtforms.validators import DataRequired, Length, Email, InputRequired, EqualTo
 
 
 class LoginForm(FlaskForm):
@@ -44,6 +44,12 @@ class RegisterCompanyForm(FlaskForm):
     phone_number = StringField('Phone Number', validators=[DataRequired(), Length(min=3, max=32)],
                                render_kw={'class': 'form-control'})
 
+    password = PasswordField('Password',
+                             validators=[InputRequired(), EqualTo('confirm', message='Passwords must match')],
+                             render_kw={'class': 'form-control'}
+                             )
+    confirm = PasswordField('Confirm password', validators=[DataRequired()], render_kw={'class': 'form-control'})
+
     def __init__(self, *args, **kwargs):
         super(RegisterCompanyForm, self).__init__(*args, **kwargs)
 
@@ -58,6 +64,13 @@ class RegisterEmployeeForm(FlaskForm):
     phone_number = StringField('Phone Number', validators=[Length(min=3, max=32)],
                                render_kw={'class': 'form-control'})
     is_company_admin = BooleanField('Company Admin', render_kw={'class': 'form-control'})
+
+    password = PasswordField('Temporary Password',
+                             validators=[InputRequired(), EqualTo('confirm', message='Passwords must match')],
+                             render_kw={'class': 'form-control'}
+                             )
+    confirm = PasswordField('Confirm Temporary Password', validators=[DataRequired()],
+                            render_kw={'class': 'form-control'})
 
     def __init__(self, *args, **kwargs):
         super(RegisterEmployeeForm, self).__init__(*args, **kwargs)
