@@ -50,6 +50,15 @@ CREATE TABLE data_source (
 );
 
 
+DROP TABLE IF EXISTS data_source_type;
+CREATE TABLE data_source_type (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
 DROP TABLE IF EXISTS data_usage;
 CREATE TABLE data_usage (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import (
-    StringField, PasswordField, BooleanField, SubmitField, SelectField, FileField, TextAreaField, FloatField
+    StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, FloatField
 )
+from flask_wtf.file import FileField
 from wtforms.validators import DataRequired, Length, Email, InputRequired, EqualTo
 
 
@@ -85,7 +86,7 @@ class CreateDataSourceForm(FlaskForm):
 
     publish = BooleanField('Publish', render_kw={'class': 'form-control'})
     is_private = BooleanField('Private', render_kw={'class': 'form-control'})
-    type = SelectField('Data Source Type', render_kw={'class': 'form-control'})
+    data_source_type = SelectField('Data Source Type', render_kw={'class': 'form-control'})
     file = FileField('Source File', render_kw={'class': 'form-control'})
     subscription_fee = FloatField('Subscription Fee', render_kw={'class': 'form-control'})
     responsible_employee = SelectField('Responsible Employee', render_kw={'class': 'form-control'})

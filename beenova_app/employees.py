@@ -1,7 +1,10 @@
-from flask import Blueprint, redirect, render_template, session, url_for
-from werkzeug.security import generate_password_hash
+import os
 
-from beenova_app.forms import RegisterEmployeeForm
+from flask import Blueprint, redirect, render_template, session, url_for, current_app
+from werkzeug.security import generate_password_hash
+from werkzeug.utils import secure_filename
+
+from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm
 from beenova_app.db_queries import DBOperator
 
 bp = Blueprint('employees', __name__, url_prefix='/employees')
@@ -49,3 +52,37 @@ def register_employee():
 
             return redirect(url_for("index"))
     return render_template('employees/register_employee.html', form=form, error=error)
+
+
+@bp.route('/upload_data_source', methods=('GET', 'POST'))
+def upload_data_source():
+    form = CreateDataSourceForm()
+    error = None
+    db_operator = DBOperator()
+
+    form.data_source_type.choices = db_operator.get_data_source_types()
+    form.responsible_employee.choices = db_operator.get_employees_of_company(session.get('user_company_id'))
+
+    if form.validate_on_submit():
+        title = form.title.data
+        description = form.description.data
+        publish = form.publish.data
+        is_private = form.is_private.data
+        data_source_type = form.data_source_type.data
+        file = form.file.data
+        subscription_fee = form.subscription_fee.data
+        responsible_employee = form.responsible_employee.data
+
+        company_id = db_operator.get_employee_by_id(session.get('user_id'))['company']
+        filename = secure_filename(form.file.data.filename)
+        file_save_path = os.path.join(current_app.config['UPLOAD_FOLDER'], str(company_id), filename)
+
+        if not title or not description or not data_source_type or not responsible_employee:
+            error = "Please fill all required fields."
+
+        if error is None:
+            os.makedirs(os.path.dirname(file_save_path), exist_ok=True)
+            form.file.data.save(file_save_path)
+
+            return redirect(url_for("index"))
+    return render_template('employees/upload_data_source.html', form=form, error=error)

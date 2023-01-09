@@ -89,6 +89,23 @@ class DBOperator:
         result = self.db.execute(query, (company_name,)).fetchone()
         return result
 
+    def get_data_source_types(self):
+        # get data source types from db
+        query = """
+            SELECT * FROM data_source_type;
+        """
+
+        result = self.db.execute(query).fetchall()
+        return [(res["id"], res["name"]) for res in result]
+
+    def get_employees_of_company(self, company_id):
+        query = """
+            SELECT * FROM employee WHERE company=?;
+        """
+
+        result = self.db.execute(query, str(company_id)).fetchall()
+        return [(res["id"], res["first_name"] + res["last_name"]) for res in result]
+
     # method signatures for other operations
     def create_data_source(self, name, url, created_by, company_id):
         pass
@@ -106,3 +123,6 @@ class DBOperator:
 
     def create_request(self, requester, data_source, request, request_type, status):
         pass
+
+
+
