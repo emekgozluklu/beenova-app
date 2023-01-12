@@ -7,12 +7,14 @@ from werkzeug.utils import secure_filename
 
 from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm
 from beenova_app.db_queries import DBOperator
+from beenova_app.auth import login_required
 
 
 bp = Blueprint('app', __name__, url_prefix='/app')
 
 
 @bp.route('/company')
+@login_required
 def company_dashboard():
     data = {
         'numbers': defaultdict(int),
@@ -31,6 +33,7 @@ def company_dashboard():
 
 
 @bp.route('/register_employee', methods=('GET', 'POST'))
+@login_required
 def register_employee():
     form = RegisterEmployeeForm()
     error = None
@@ -63,7 +66,7 @@ def register_employee():
                 username=email,
                 email=email,
                 password_hash=generate_password_hash(password),
-                company=None,
+                company=session.get('user_company_id'),
                 phone_number=phone_number,
                 is_admin=0,
                 is_company_admin=is_company_admin,
@@ -75,6 +78,7 @@ def register_employee():
 
 
 @bp.route('/request_data_source', methods=('GET', 'POST'))
+@login_required
 def request_data_source():
     form = RequestDataSourceForm()
     error = None
@@ -94,13 +98,14 @@ def request_data_source():
         if error is None:
             # create request
             db_operator.create_request(requester=requester, data_source=data_source, 
-                                            request_message=request_message)
+                                       request_message=request_message)
 
             return redirect(url_for("index"))
     return render_template('app/request_data_source.html', form=form, error=error)
 
 
 @bp.route('/upload_data_source', methods=('GET', 'POST'))
+@login_required
 def upload_data_source():
     form = CreateDataSourceForm()
     error = None

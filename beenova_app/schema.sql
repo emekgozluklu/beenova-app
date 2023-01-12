@@ -118,3 +118,15 @@ CREATE TABLE employee_permission (
   FOREIGN KEY (employee) REFERENCES employee (id),
   FOREIGN KEY (permission) REFERENCES permission (id)
 );
+
+DROP TABLE IF EXISTS demo_request;
+CREATE TABLE demo_request (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  company TEXT NOT NULL,
+  phone_number TEXT NOT NULL,
+  message TEXT NOT NULL,
+  date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

@@ -23,6 +23,7 @@ def create_app(test_config=None):
         pass
 
     app.add_url_rule("/", view_func=views.index)
+    app.add_url_rule("/request_demo", view_func=views.request_demo, methods=['GET', 'POST'])
     app.register_blueprint(auth.bp)
     app.register_blueprint(admin.bp)
     app.register_blueprint(application.bp)

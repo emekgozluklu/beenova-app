@@ -3,12 +3,14 @@ from werkzeug.security import generate_password_hash
 
 from beenova_app.forms import RegisterCompanyForm
 from beenova_app.db_queries import DBOperator
+from beenova_app.auth import login_required
 
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 
 @bp.route('/register_company', methods=('GET', 'POST'))
+@login_required
 def register_company():
     form = RegisterCompanyForm()
     error = None

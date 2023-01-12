@@ -34,26 +34,6 @@ def logout_required(view):
     return wrapped_view
 
 
-@bp.route('/request_demo', methods=('GET', 'POST'))
-@logout_required
-def request_demo():
-    form = RequestDemoForm()
-    error = None
-    if form.validate_on_submit():
-        first_name = form.first_name.data
-        last_name = form.last_name.data
-        email = form.email.data
-        message = form.message.data
-
-        if not first_name or not last_name or not email:
-            error = "Please fill all required fields."
-        if error is None:
-            # save request to the database
-            return redirect(url_for("index"))
-
-    return render_template('auth/request_demo.html', form=form, error=error)
-
-
 @bp.route('/login', methods=('GET', 'POST'))
 @logout_required
 def login():

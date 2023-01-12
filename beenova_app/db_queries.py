@@ -149,5 +149,15 @@ class DBOperator:
         self.db.execute(query, (requester, data_source, request_message, 0))
         self.db.commit()
 
+    def create_request_demo(self, first_name, last_name, email, company, phone_number, message):
+
+        query = """
+            INSERT INTO demo_request (first_name, last_name, email, company, phone_number, message)
+            VALUES (?, ?, ?, ?, ?, ?);
+        """
+
+        self.db.execute(query, (first_name, last_name, email, company, phone_number, message))
+        self.db.commit()
+
 
 

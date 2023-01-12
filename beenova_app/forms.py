@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import (
-    StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, FloatField, DateField,
+    StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, FloatField,
 )
 from flask_wtf.file import FileField
 from wtforms.validators import DataRequired, Length, Email, InputRequired, EqualTo
@@ -22,9 +22,13 @@ class RequestDemoForm(FlaskForm):
                              render_kw={'class': 'form-control'})
     last_name = StringField('Last Name', validators=[DataRequired(), Length(min=3, max=32)],
                             render_kw={'class': 'form-control'})
+    company = StringField('Company', validators=[DataRequired(), Length(min=3, max=32)],
+                          render_kw={'class': 'form-control'})
     email = StringField('Company Email', validators=[DataRequired(), Length(1, 64), Email()],
                         render_kw={'class': 'form-control'})
-    message = StringField('Your Message', validators=[Length(1, 500)], render_kw={'class': 'form-control'})
+    phone_number = StringField('Phone Number', validators=[DataRequired(), Length(min=3, max=32)],
+                               render_kw={'class': 'form-control'})
+    message = TextAreaField('Your Message', validators=[Length(1, 500)], render_kw={'class': 'form-control'})
 
     def __init__(self, *args, **kwargs):
         super(RequestDemoForm, self).__init__(*args, **kwargs)
@@ -93,6 +97,7 @@ class CreateDataSourceForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateDataSourceForm, self).__init__(*args, **kwargs)
+
 
 class RequestDataSourceForm(FlaskForm):
 
