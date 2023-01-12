@@ -5,8 +5,9 @@ from flask import Blueprint, redirect, render_template, session, url_for, curren
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 
-from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm
+from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm
 from beenova_app.db_queries import DBOperator
+
 
 bp = Blueprint('app', __name__, url_prefix='/app')
 
@@ -71,6 +72,32 @@ def register_employee():
 
             return redirect(url_for("index"))
     return render_template('app/register_employee.html', form=form, error=error)
+
+
+@bp.route('/request_data_source', methods=('GET', 'POST'))
+def request_data_source():
+    form = RequestDataSourceForm()
+    error = None
+    db_operator = DBOperator()
+
+    form.data_source.choices = db_operator.get_data_sources()
+    
+    if form.validate_on_submit():
+
+        requester = session.get('user_id')
+        data_source = form.data_source.data
+        request_message = form.request_message.data
+
+        if not requester or not data_source or not request_message:
+            error = "Please fill all required fields."
+        
+        if error is None:
+            # create request
+            db_operator.create_request(requester=requester, data_source=data_source, 
+                                            request_message=request_message)
+
+            return redirect(url_for("index"))
+    return render_template('app/request_data_source.html', form=form, error=error)
 
 
 @bp.route('/upload_data_source', methods=('GET', 'POST'))

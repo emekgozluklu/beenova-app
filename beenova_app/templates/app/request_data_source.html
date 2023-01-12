@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+{% set active_page = "request_data_source" %}
+
+{% block title %}
+Request Data Source
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% from "render_form_field.html" import render_field %}
+
+{% block content %}
+    <div class="container">
+        <main role="main" class="col-md ml-sm-auto col-lg" style="margin-top: 20px">
+            <h1 class="h2">Request Data Source</h1>
+
+            {% if error %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Whoops!</strong> {{ error }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden>&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+
+            <form id="dataRequestForm" class="form form-register-company" method="POST" action="{{ url_for("app.request_data_source") }}" enctype="multipart/form-data">
+
+                {{ form.hidden_tag() }}
+                {{ render_field(form.data_source) }}<br>
+                {{ render_field(form.request_message, placeholder="Write the details of request... ") }}<br>
+                
+                <p><input class="btn btn-dark btn-submit btn-dark" type="submit" value="Send Request"></p>
+            </form>
+
+        </main>
+    </div>
+{% endblock %}

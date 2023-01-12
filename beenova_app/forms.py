@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import (
-    StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, FloatField
+    StringField, PasswordField, BooleanField, SubmitField, SelectField, TextAreaField, FloatField, DateField,
 )
 from flask_wtf.file import FileField
 from wtforms.validators import DataRequired, Length, Email, InputRequired, EqualTo
@@ -93,3 +93,15 @@ class CreateDataSourceForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateDataSourceForm, self).__init__(*args, **kwargs)
+
+class RequestDataSourceForm(FlaskForm):
+
+    # Data source context'ten alınacak ileride. Şimdilik böyle kalsın.
+    data_source = SelectField('Data Source', render_kw={'class': 'form-control'})
+    
+    request_message = TextAreaField('Request Message', validators=[DataRequired(), Length(min=3, max=500)],
+                                    render_kw={'class': 'form-control'})
+    
+    def __init__(self, *args, **kwargs):
+        super(RequestDataSourceForm, self).__init__(*args, **kwargs)
+

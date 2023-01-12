@@ -89,6 +89,14 @@ class DBOperator:
         result = self.db.execute(query, (company_name,)).fetchone()
         return result
 
+    def get_data_source_by_id(self):
+        query = """
+            SELECT * FROM data_source WHERE id=?;
+        """
+
+        result = self.db.execute(query, (id,)).fetchone()
+        return result
+
     def get_data_source_types(self):
         # get data source types from db
         query = """
@@ -110,6 +118,16 @@ class DBOperator:
     def create_data_source(self, name, url, created_by, company_id):
         pass
 
+    def get_data_sources(self):
+
+        query = """
+            SELECT * FROM data_source;
+        """
+
+        result = self.db.execute(query).fetchall()
+        return [(res["id"], res["title"]) for res in result]
+        
+
     def create_data_usage(self, data_source, data_user, start_time, end_time, usage_amount, subscription):
         pass
 
@@ -121,8 +139,15 @@ class DBOperator:
                             subscription_type, status):
         pass
 
-    def create_request(self, requester, data_source, request, request_type, status):
-        pass
+    def create_request(self, requester, data_source, request_message):
+        
+        query = """
+            INSERT INTO request (requester, data_source, request_message, date_updated, status)
+            VALUES (?, ?, ?, DATETIME('NOW'), ?);
+        """
+
+        self.db.execute(query, (requester, data_source, request_message, 0))
+        self.db.commit()
 
 
 
