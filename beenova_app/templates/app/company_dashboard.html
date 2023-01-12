@@ -125,7 +125,7 @@ Dashboard
                                                         <td>{{ data['table_rows'][i][1] }}</td>
                                                         <td>{{ data['table_rows'][i][2] }}</td>
                                                         <td>{{ data['table_rows'][i][3] }}</td>
-                                                        <td>{{ data['table_rows'][i][4] }}</td>
+                                                        <td>{{ moment(data['table_rows'][i][4]).fromNow() }}</td>
                                                     </tr>
                                                 {%endfor%}
                                         </tbody>
@@ -198,10 +198,16 @@ Dashboard
             </div>
     </div>
     </div>
-    <script src="{{ url_for('static', filename='vendor/chart.js/Chart.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
-    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/demo/chart-bar-demo.js') }}"></script>
+    {% block scripts %}
+        {{ super() }}
+        {{ moment.include_moment() }}
+        <script src="{{ url_for('static', filename='vendor/chart.js/Chart.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/demo/chart-area-demo.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/demo/chart-pie-demo.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/demo/chart-bar-demo.js') }}"></script>
+    {% endblock %}
+
+
 
 {% endblock %}

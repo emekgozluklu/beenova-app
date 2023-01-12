@@ -16,13 +16,11 @@ bp = Blueprint('app', __name__, url_prefix='/app')
 @bp.route('/company')
 @login_required
 def company_dashboard():
+    db_operator = DBOperator()
+    ds_table_rows = db_operator.get_data_sources_of_company_for_dashboard_table(session.get('user_company_id'))
     data = {
         'numbers': defaultdict(int),
-        'table_rows': [
-            ('Cement Formula', 'csv', '3', 'Sname Ssurname', '11/01/2023'),
-            ('Moisture/Intensity Tests', 'csv', '5', 'Some One', '16/02/2022'),
-            ('Some other data', 'json', '0', 'Some other one', '30/09/2022'),
-        ],
+        'table_rows': ds_table_rows,
         'data_usages': {
             'DS1': 5.2,
             'DS2': 4.9,

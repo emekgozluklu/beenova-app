@@ -1,10 +1,12 @@
 from flask import Flask
+from flask_moment import Moment
 from beenova_app import views, auth, admin, application
 import os
 
 
 def create_app(test_config=None):
     app = Flask(__name__)
+    moment = Moment(app)
 
     app.config.from_mapping(
         SECRET_KEY='dev',

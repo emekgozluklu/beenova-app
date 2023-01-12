@@ -5,6 +5,15 @@ class DBOperator:
     def __init__(self):
         self.db = get_db()
 
+    # helpers
+    def get_data_source_type_name(self, data_source_type_id):
+        query = """
+            SELECT name FROM data_source_type WHERE id=?;
+        """
+
+        result = self.db.execute(query, (data_source_type_id,)).fetchone()
+        return result["name"]
+
     # employee operations
     def create_employee(self, first_name, last_name, created_by, username, email, company, password_hash,
                         phone_number=None, is_admin=0, is_company_admin=0, is_activated=0):
@@ -158,6 +167,31 @@ class DBOperator:
 
         self.db.execute(query, (first_name, last_name, email, company, phone_number, message))
         self.db.commit()
+
+    def get_data_sources_of_company_for_dashboard_table(self, company_id):
+        # join data sources and employee tables and get data sources of company
+        query = """
+            SELECT ds.id ds_id, ds.title title, ds.type_id type, e.first_name || ' ' || e.last_name maintainer, ds.created_at created_at
+             FROM data_source ds join employee e on ds.responsible_employee = e.id where e.company = ?;
+        """
+
+        result = self.db.execute(query, (str(company_id),)).fetchall()
+        return [(
+                res["title"],
+                self.get_data_source_type_name(res["type"]),
+                len(self.get_active_users_of_data_source(res["ds_id"])),
+                res["maintainer"],
+                res["created_at"]
+                ) for res in result]
+
+    def get_active_users_of_data_source(self, data_source_id):
+        query = """
+            SELECT * FROM subscription WHERE data_source=? AND status=?;
+        """
+        print(data_source_id)
+
+        result = self.db.execute(query, (data_source_id, '1')).fetchall()
+        return list(result)
 
 
 
