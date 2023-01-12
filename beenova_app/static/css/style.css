@@ -1,5 +1,11 @@
 .nav-link {
-    font-size: 1.4em;
+    font-size: 1.2em;
+    margin-right: 2em;
+    color: white;
+}
+
+.nav-link:hover {
+    color: #AAAAAA;
 }
 
 #carouselIndex{
@@ -9,4 +15,8 @@
 .copyleft {
   display:inline-block;
   transform: rotate(180deg);
+}
+
+.navbar{
+    margin-bottom: 2rem !important;
 }

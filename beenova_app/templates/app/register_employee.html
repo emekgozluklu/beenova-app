@@ -24,7 +24,7 @@ Register Employee
                   </button>
                 </div>
             {% endif %}
-            <form id="registerEmployeeForm" class="form form-register-company" method="POST" action="{{ url_for("employees.register_employee") }}" role="form">
+            <form id="registerEmployeeForm" class="form form-register-company" method="POST" action="{{ url_for("app.register_employee") }}" role="form">
 
                 {{ form.hidden_tag() }}
                 {{ render_field(form.first_name, placeholder="") }}<br>

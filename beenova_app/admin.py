@@ -23,7 +23,6 @@ def register_company():
         confirm = form.confirm.data
 
         c = db_operator.get_company_by_name(company_name)
-        print("check")
 
         if not company_name or not first_name or not last_name or not email or not phone_number:
             error = "Please fill all required fields."

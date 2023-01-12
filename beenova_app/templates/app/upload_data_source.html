@@ -24,7 +24,7 @@ Upload Data Source
                   </button>
                 </div>
             {% endif %}
-            <form id="uploadDataSourceForm" class="form form-register-company" method="POST" action="{{ url_for("employees.upload_data_source") }}" enctype="multipart/form-data">
+            <form id="uploadDataSourceForm" class="form form-register-company" method="POST" action="{{ url_for("app.upload_data_source") }}" enctype="multipart/form-data">
 
                 {{ form.hidden_tag() }}
                 {{ render_field(form.title, placeholder="") }}<br>

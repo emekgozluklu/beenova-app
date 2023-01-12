@@ -1,4 +1,5 @@
 import os
+from collections import defaultdict
 
 from flask import Blueprint, redirect, render_template, session, url_for, current_app
 from werkzeug.security import generate_password_hash
@@ -7,7 +8,25 @@ from werkzeug.utils import secure_filename
 from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm
 from beenova_app.db_queries import DBOperator
 
-bp = Blueprint('employees', __name__, url_prefix='/employees')
+bp = Blueprint('app', __name__, url_prefix='/app')
+
+
+@bp.route('/company')
+def company_dashboard():
+    data = {
+        'numbers': defaultdict(int),
+        'table_rows': [
+            ('Cement Formula', 'csv', '3', 'Sname Ssurname', '11/01/2023'),
+            ('Moisture/Intensity Tests', 'csv', '5', 'Some One', '16/02/2022'),
+            ('Some other data', 'json', '0', 'Some other one', '30/09/2022'),
+        ],
+        'data_usages': {
+            'DS1': 5.2,
+            'DS2': 4.9,
+            'DS3': 9.1
+        }
+    }
+    return render_template('app/company_dashboard.html', data=data)
 
 
 @bp.route('/register_employee', methods=('GET', 'POST'))
@@ -51,7 +70,7 @@ def register_employee():
             )
 
             return redirect(url_for("index"))
-    return render_template('employees/register_employee.html', form=form, error=error)
+    return render_template('app/register_employee.html', form=form, error=error)
 
 
 @bp.route('/upload_data_source', methods=('GET', 'POST'))
@@ -85,4 +104,4 @@ def upload_data_source():
             form.file.data.save(file_save_path)
 
             return redirect(url_for("index"))
-    return render_template('employees/upload_data_source.html', form=form, error=error)
+    return render_template('app/upload_data_source.html', form=form, error=error)
