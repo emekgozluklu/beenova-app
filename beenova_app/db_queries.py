@@ -137,6 +137,16 @@ class DBOperator:
                                 responsible_employee, created_by))
         self.db.commit()
 
+    def update_datasource_table_name(self, data_source_id, table_name):
+        query = """
+            UPDATE data_source
+            SET database_table_name=?
+            WHERE id=?;
+        """
+
+        self.db.execute(query, (table_name, data_source_id))
+        self.db.commit()
+
     def get_data_sources(self):
 
         query = """
@@ -198,7 +208,6 @@ class DBOperator:
         query = """
             SELECT * FROM subscription WHERE data_source=? AND status=?;
         """
-        print(data_source_id)
 
         result = self.db.execute(query, (data_source_id, '1')).fetchall()
         return list(result)
@@ -211,5 +220,62 @@ class DBOperator:
         result = self.db.execute(query, (data_root,)).fetchone()
         return result["id"]
 
+    def check_if_data_source_exists(self, table_name):
+        query = """
+            SELECT * FROM data_source WHERE database_table_name=?;
+        """
+
+        result = self.db.execute(query, (table_name,)).fetchone()
+        return result is not None
+
+    def get_data_source_by_title(self, title):
+        query = """
+            SELECT * FROM data_source WHERE title=?;
+        """
+
+        result = self.db.execute(query, (title,)).fetchone()
+        return result
+
+    def create_data_source_permission(self, data_source_id, employee, permission_type):
+        if permission_type not in ["read", "write", "delete"]:
+            raise Exception("permission_type must be one of 'read', 'write', 'delete'")
+
+        query = """
+            INSERT INTO data_source_permission (data_source, employee, permission_type)
+            VALUES (?, ?, ?);
+        """
+
+        self.db.execute(query, (data_source_id, employee, permission_type))
+        self.db.commit()
+
+    def check_if_user_has_permission(self, table_name, employee, method):
+        query = """
+            SELECT * FROM data_source_permission WHERE data_source=? AND employee=? AND permission_type=?;
+        """
+
+        result = self.db.execute(query, (table_name, employee, method)).fetchone()
+        return result is not None
+
+    def execute_query(self, query):
+        result = self.db.execute(query).fetchall()
+        return result
+
+    def get_table_columns(self, table_name):
+        query = f"""
+            PRAGMA table_info({table_name});
+        """
+
+        result = self.db.execute(query).fetchall()
+        return [res['name'] for res in result]
+
+    def update_datasource_url_endpoint(self, data_source_id, endpoint):
+        query = """
+            UPDATE data_source
+            SET url_endpoint=?
+            WHERE id=?;
+        """
+
+        self.db.execute(query, (endpoint, data_source_id))
+        self.db.commit()
 
 

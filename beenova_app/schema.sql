@@ -44,6 +44,8 @@ CREATE TABLE data_source (
   subscription_fee DOUBLE,
   responsible_employee INTEGER NOT NULL,
   created_by INTEGER NOT NULL,
+  database_table_name TEXT,
+  url_endpoint TEXT,
   FOREIGN KEY (type_id) REFERENCES data_source_type (id),
   FOREIGN KEY (responsible_employee) REFERENCES employee (id),
   FOREIGN KEY (created_by) REFERENCES employee (id)
@@ -129,4 +131,14 @@ CREATE TABLE demo_request (
   phone_number TEXT NOT NULL,
   message TEXT NOT NULL,
   date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS data_source_permission;
+CREATE TABLE data_source_permission (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  data_source INTEGER NOT NULL,
+  employee INTEGER NOT NULL,
+  permission_type TEXT NOT NULL,
+  FOREIGN KEY (data_source) REFERENCES data_source (id),
+  FOREIGN KEY (employee) REFERENCES employee (id)
 );

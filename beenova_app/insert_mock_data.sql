@@ -54,3 +54,9 @@ values (1, 2, 1, 1, 1);
 
 insert into main.subscription (subscriber, data_source, request, subscription_type, status)
 values (2, 2, 1, 1, 1);
+
+/* data source permission types and data source permissions */
+
+insert into main.data_source_permission (data_source, employee, permission_type) values (1, 1, 'read');
+insert into main.data_source_permission (data_source, employee, permission_type) values (1, 2, 'read');
+

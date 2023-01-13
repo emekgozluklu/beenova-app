@@ -1,14 +1,14 @@
 import os
 from collections import defaultdict
 
-from flask import Blueprint, redirect, render_template, session, url_for, current_app
+from flask import Blueprint, redirect, render_template, session, url_for, current_app, request, jsonify
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 
 from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm
 from beenova_app.db_queries import DBOperator
 from beenova_app.auth import login_required
-from beenova_app.utils import DataSourceFileHandler
+from beenova_app.utils import DataSourceFileHandler, APIRequestHandler
 
 
 bp = Blueprint('app', __name__, url_prefix='/app')
@@ -119,7 +119,6 @@ def upload_data_source():
         publish = form.publish.data
         is_private = form.is_private.data
         data_source_type = form.data_source_type.data
-        file = form.file.data
         subscription_fee = form.subscription_fee.data
         responsible_employee = form.responsible_employee.data
 
@@ -145,11 +144,34 @@ def upload_data_source():
                 responsible_employee=responsible_employee,
                 created_by=session.get('user_id')
             )
+            data_source_id = db_operator.get_data_source_by_title(title)['id']
+            db_operator.create_data_source_permission(data_source_id, responsible_employee, 'read')
+            db_operator.create_data_source_permission(data_source_id, responsible_employee, 'write')
+            db_operator.create_data_source_permission(data_source_id, responsible_employee, 'delete')
 
             data_source_id = db_operator.get_data_source_id_by_file_save_path(file_save_path)
+
             ds_handler = DataSourceFileHandler(data_source_id, file_save_path)
             ds_handler.handle_csv()
 
             return redirect(url_for("app.company_dashboard"))
     return render_template('app/upload_data_source.html', form=form, error=error)
 
+
+@bp.route('/api/v1/<table_name>/<method>', methods=('GET',))
+@login_required
+def api_v1(table_name, method):
+    # check is data source exists
+    db_operator = DBOperator()
+    data_source_exists = db_operator.check_if_data_source_exists(table_name)
+    method_valid = method in ['read', 'write', 'delete']
+    user_has_permission = db_operator.check_if_user_has_permission(table_name, session.get('user_id'), method)
+    args = request.args.to_dict()
+    if data_source_exists and method_valid:
+        result = APIRequestHandler(args, table_name, method).handle_request()
+        if type(result) is tuple:
+            return result
+        result = [tuple(row) for row in result]
+        return jsonify(result)
+    else:
+        return jsonify({'error': 'Access denied'})
