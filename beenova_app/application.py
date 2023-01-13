@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm
 from beenova_app.db_queries import DBOperator
 from beenova_app.auth import login_required
+from beenova_app.utils import DataSourceFileHandler
 
 
 bp = Blueprint('app', __name__, url_prefix='/app')
@@ -133,5 +134,22 @@ def upload_data_source():
             os.makedirs(os.path.dirname(file_save_path), exist_ok=True)
             form.file.data.save(file_save_path)
 
-            return redirect(url_for("index"))
+            db_operator.create_data_source(
+                title=title,
+                description=description,
+                is_published=publish,
+                type_id=data_source_type,
+                data_root=file_save_path,
+                is_private=is_private,
+                subscription_fee=subscription_fee,
+                responsible_employee=responsible_employee,
+                created_by=session.get('user_id')
+            )
+
+            data_source_id = db_operator.get_data_source_id_by_file_save_path(file_save_path)
+            ds_handler = DataSourceFileHandler(data_source_id, file_save_path)
+            ds_handler.handle_csv()
+
+            return redirect(url_for("app.company_dashboard"))
     return render_template('app/upload_data_source.html', form=form, error=error)
+

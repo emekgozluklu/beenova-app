@@ -98,12 +98,12 @@ class DBOperator:
         result = self.db.execute(query, (company_name,)).fetchone()
         return result
 
-    def get_data_source_by_id(self):
+    def get_data_source_by_id(self, data_source_id):
         query = """
             SELECT * FROM data_source WHERE id=?;
         """
 
-        result = self.db.execute(query, (id,)).fetchone()
+        result = self.db.execute(query, (str(data_source_id),)).fetchone()
         return result
 
     def get_data_source_types(self):
@@ -124,8 +124,18 @@ class DBOperator:
         return [(res["id"], res["first_name"] + res["last_name"]) for res in result]
 
     # method signatures for other operations
-    def create_data_source(self, name, url, created_by, company_id):
-        pass
+    def create_data_source(self, title, description, is_published, type_id, data_root, is_private, subscription_fee,
+                           responsible_employee, created_by):
+
+        query = """
+            INSERT INTO data_source (title, description, is_published, type_id, data_root, is_private, subscription_fee,
+                                    responsible_employee, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """
+
+        self.db.execute(query, (title, description, is_published, type_id, data_root, is_private, subscription_fee,
+                                responsible_employee, created_by))
+        self.db.commit()
 
     def get_data_sources(self):
 
@@ -192,6 +202,14 @@ class DBOperator:
 
         result = self.db.execute(query, (data_source_id, '1')).fetchall()
         return list(result)
+
+    def get_data_source_id_by_file_save_path(self, data_root):
+        query = """
+            SELECT id FROM data_source WHERE data_root=?;
+        """
+
+        result = self.db.execute(query, (data_root,)).fetchone()
+        return result["id"]
 
 
 
