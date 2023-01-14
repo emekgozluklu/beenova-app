@@ -16,7 +16,7 @@ class DBOperator:
 
     # employee operations
     def create_employee(self, first_name, last_name, created_by, username, email, company, password_hash,
-                        phone_number=None, is_admin=0, is_company_admin=0, is_activated=0):
+                        phone_number=None, is_admin=0, is_company_admin=0, is_activated=0, profile_photo="default_user.jpg"):
         query = """ 
             INSERT INTO employee (first_name, last_name, username, email, company, password_hash, phone_number, 
                                 is_admin, is_company_admin, is_activated, created_by)
@@ -24,7 +24,7 @@ class DBOperator:
         """
 
         self.db.execute(query, (first_name, last_name, username, email, company, password_hash, phone_number, is_admin,
-                                is_company_admin, is_activated, created_by))
+                                is_company_admin, is_activated, created_by, profile_photo))
         self.db.commit()
 
     def update_employee_with_id(self, employee_id, **kwargs):
@@ -98,6 +98,14 @@ class DBOperator:
         result = self.db.execute(query, (company_name,)).fetchone()
         return result
 
+    def get_company_by_id(self, company_id):
+        query = """
+            SELECT * FROM company WHERE id=?;
+        """
+
+        result = self.db.execute(query, (company_id,)).fetchone()
+        return result
+
     def get_data_source_by_id(self, data_source_id):
         query = """
             SELECT * FROM data_source WHERE id=?;
@@ -146,7 +154,6 @@ class DBOperator:
         result = self.db.execute(query).fetchall()
         return [(res["id"], res["title"]) for res in result]
         
-
     def create_data_usage(self, data_source, data_user, start_time, end_time, usage_amount, subscription):
         pass
 
@@ -193,6 +200,19 @@ class DBOperator:
                 res["maintainer"],
                 res["created_at"]
                 ) for res in result]
+
+    def get_data_sources_by_responsible_employee_id(self, employee_id):
+        query = """
+            SELECT * FROM data_source WHERE responsible_employee=?;
+        """
+
+        result = self.db.execute(query, (str(employee_id),)).fetchall()
+        return [(
+                res["title"],
+                self.get_data_source_type_name(res["type_id"]),
+                len(self.get_active_users_of_data_source(res["id"])),
+                res["created_at"]
+        ) for res in result]
 
     def get_active_users_of_data_source(self, data_source_id):
         query = """
