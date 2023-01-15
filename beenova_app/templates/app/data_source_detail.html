@@ -1,0 +1,28 @@
+ {% extends 'layout.html' %}
+{% set active_page = "data_source_detail" %}
+
+{% block title %}
+    {{ data_source['title'] }}
+{% endblock %}
+
+
+{% block header %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    {% if user_is_admin %}
+        User is admin
+
+    {% elif user_is_subscribed %}
+        User is subscribed
+
+    {% else %}
+        {{ data_source }}
+
+    {% endif %}
+
+
+{% endblock %}

@@ -1,4 +1,5 @@
-import sqlite3
+from collections import defaultdict
+
 import pandas as pd
 
 from beenova_app.db_queries import DBOperator
@@ -84,3 +85,10 @@ class APIRequestHandler:
                 pass
         else:
             return "Invalid arguments", 400
+
+
+def transform_marketplace_data(data_sources):
+    data = defaultdict(list)
+    for ds in data_sources:
+        data[ds['name']].append(dict(ds))
+    return data

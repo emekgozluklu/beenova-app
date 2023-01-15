@@ -8,10 +8,44 @@ from werkzeug.utils import secure_filename
 from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm
 from beenova_app.db_queries import DBOperator
 from beenova_app.auth import login_required
-from beenova_app.utils import DataSourceFileHandler, APIRequestHandler
+from beenova_app.utils import DataSourceFileHandler, APIRequestHandler, transform_marketplace_data
 
 
 bp = Blueprint('app', __name__, url_prefix='/app')
+
+
+@bp.route('/marketplace')
+@login_required
+def marketplace():
+    db_operator = DBOperator()
+    data_sources = db_operator.get_available_data_sources(excluded_company_id=session['user_company_id'])
+    data = transform_marketplace_data(data_sources)
+
+    if len(data.keys()) == 0:
+        return render_template('app/marketplace.html', data=None, no_data=True)
+
+    return render_template('app/marketplace.html', data=data, no_data=False)
+
+
+@bp.route('/data_source/<int:data_source_id>')
+@login_required
+def data_source_detail(data_source_id):
+    db_operator = DBOperator()
+    data_source_id = int(data_source_id)
+    data_source = db_operator.get_data_source_by_id(data_source_id)
+    data_source = dict(data_source) if data_source else None
+
+    user_managed_data_sources = db_operator.get_user_managed_data_source_ids(session['user_id'])
+    user_subscribed_data_sources = db_operator.get_user_subscribed_data_source_ids(session['user_company_id'])
+
+    user_is_admin = data_source_id in user_managed_data_sources
+    user_is_subscribed = data_source_id in user_subscribed_data_sources
+
+    return render_template('app/data_source_detail.html',
+                           data_source=data_source,
+                           user_is_admin=user_is_admin,
+                           user_is_subscribed=user_is_subscribed
+                           )
 
 
 @bp.route('/company')
@@ -76,31 +110,38 @@ def register_employee():
     return render_template('app/register_employee.html', form=form, error=error)
 
 
-@bp.route('/request_data_source', methods=('GET', 'POST'))
+@bp.route('/request/<data_source_id>', methods=('GET', 'POST'))
 @login_required
-def request_data_source():
+def request_data_source(data_source_id):
     form = RequestDataSourceForm()
     error = None
     db_operator = DBOperator()
+    data_source_id = int(data_source_id)
 
-    form.data_source.choices = db_operator.get_data_sources()
-    
+    available_data_sources = db_operator.get_available_data_sources()
+    available_data_source_ids = [ds['id'] for ds in available_data_sources]
+
+    requested_ds = defaultdict(str)
+
+    if data_source_id not in available_data_source_ids:
+        error = "Data source is not available!"
+    else:
+        requested_ds = dict(available_data_sources[available_data_source_ids.index(data_source_id)])
+
     if form.validate_on_submit():
-
         requester = session.get('user_id')
-        data_source = form.data_source.data
         request_message = form.request_message.data
 
-        if not requester or not data_source or not request_message:
+        if not request_message:
             error = "Please fill all required fields."
-        
+
         if error is None:
             # create request
-            db_operator.create_request(requester=requester, data_source=data_source, 
+            db_operator.create_request(requester=requester, data_source=data_source_id,
                                        request_message=request_message)
 
             return redirect(url_for("index"))
-    return render_template('app/request_data_source.html', form=form, error=error)
+    return render_template('app/request_data_source.html', form=form, error=error, requested_ds=requested_ds)
 
 
 @bp.route('/upload_data_source', methods=('GET', 'POST'))

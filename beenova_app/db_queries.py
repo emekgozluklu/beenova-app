@@ -147,15 +147,24 @@ class DBOperator:
         self.db.execute(query, (table_name, data_source_id))
         self.db.commit()
 
-    def get_data_sources(self):
+    def get_available_data_sources(self, excluded_company_id=None):
+        if excluded_company_id is None:
+            query = """
+                SELECT * FROM 
+                data_source ds join employee e join company c on ds.responsible_employee = e.id and  e.id = c.id;
+            """
 
-        query = """
-            SELECT * FROM data_source;
-        """
+            result = self.db.execute(query).fetchall()
+        else:
+            query = """
+                SELECT * FROM data_source ds join employee e join company c 
+                on ds.responsible_employee = e.id and e.id = c.id 
+                WHERE e.company!=?;
+            """
 
-        result = self.db.execute(query).fetchall()
-        return [(res["id"], res["title"]) for res in result]
-        
+            result = self.db.execute(query, (excluded_company_id,)).fetchall()
+
+        return result
 
     def create_data_usage(self, data_source, data_user, start_time, end_time, usage_amount, subscription):
         pass
@@ -191,8 +200,10 @@ class DBOperator:
     def get_data_sources_of_company_for_dashboard_table(self, company_id):
         # join data sources and employee tables and get data sources of company
         query = """
-            SELECT ds.id ds_id, ds.title title, ds.type_id type, e.first_name || ' ' || e.last_name maintainer, ds.created_at created_at
-             FROM data_source ds join employee e on ds.responsible_employee = e.id where e.company = ?;
+            SELECT ds.id ds_id, ds.title title, ds.type_id type, e.first_name || ' ' || e.last_name maintainer,
+            ds.created_at created_at 
+            FROM data_source ds join employee e on ds.responsible_employee = e.id 
+            where e.company = ?;
         """
 
         result = self.db.execute(query, (str(company_id),)).fetchall()
@@ -278,4 +289,18 @@ class DBOperator:
         self.db.execute(query, (endpoint, data_source_id))
         self.db.commit()
 
+    def get_user_managed_data_source_ids(self, employee_id):
+        query = """
+            SELECT * FROM data_source WHERE responsible_employee=?;
+        """
 
+        result = self.db.execute(query, (employee_id,)).fetchall()
+        return [res['id'] for res in result]
+
+    def get_user_subscribed_data_source_ids(self, company_id):
+        query = """
+            SELECT * FROM subscription sub join data_source ds on sub.data_source = ds.id WHERE subscriber=?;
+        """
+
+        result = self.db.execute(query, (company_id,)).fetchall()
+        return [res['id'] for res in result]

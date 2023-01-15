@@ -101,12 +101,8 @@ class CreateDataSourceForm(FlaskForm):
 
 class RequestDataSourceForm(FlaskForm):
 
-    # Data source context'ten alınacak ileride. Şimdilik böyle kalsın.
-    data_source = SelectField('Data Source', render_kw={'class': 'form-control'})
-    
     request_message = TextAreaField('Request Message', validators=[DataRequired(), Length(min=3, max=500)],
                                     render_kw={'class': 'form-control'})
     
     def __init__(self, *args, **kwargs):
         super(RequestDataSourceForm, self).__init__(*args, **kwargs)
-
