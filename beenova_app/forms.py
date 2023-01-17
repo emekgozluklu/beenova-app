@@ -106,3 +106,14 @@ class RequestDataSourceForm(FlaskForm):
     
     def __init__(self, *args, **kwargs):
         super(RequestDataSourceForm, self).__init__(*args, **kwargs)
+
+class AcceptRequestForm(FlaskForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AcceptRequestForm, self).__init__(*args, **kwargs)
+
+class RejectRequestForm(FlaskForm):
+
+
+    def __init__(self, *args, **kwargs):
+        super(RejectRequestForm, self).__init__(*args, **kwargs)        

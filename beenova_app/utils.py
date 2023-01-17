@@ -92,3 +92,19 @@ def transform_marketplace_data(data_sources):
     for ds in data_sources:
         data[ds['name']].append(dict(ds))
     return data
+
+def explain_status(table_rows):
+    
+    new_table_rows = []
+    for row in table_rows:
+        print(row)
+        row = list(row)
+        if row[-1] == 1:
+            row[-1] = "Pending"
+        elif row[-1] == 2:
+            row[-1] = "Approved"
+        elif row[-1] == 3:
+            row[-1] = "Rejected"
+        row = tuple(row)
+        new_table_rows.append(row)
+    return new_table_rows

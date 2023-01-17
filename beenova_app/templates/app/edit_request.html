@@ -18,7 +18,6 @@
         <div class="request-body">
             <h2 class="request-heading"><b>Request Details</b></h2>
 
-            <p class="text-secondary"><b>Request ID:</b> {{ user_info['id'] }}</p>
             <p class="text-secondary"><b>Data Source Title:</b> {{ user_info['title'] }}</p>
             <p class="text-secondary"><b>Request Message:</b> {{ user_info['request_message'] }}</p>
             <p class="text-secondary"><b>Request Date Created:</b> {{ user_info['date_created'] }}</p>
@@ -46,9 +45,26 @@
           </p>
           <p class="text-secondary"><b>E-mail:</b> {{ user_info['email'] }}</p>
           <hr />
+
         </div>
+        
       </div>
-  
+      
+      <div class="options">
+        <form style="display: inline-block; margin-right: 15px;" id="acceptRequestForm" method="POST" action="{{ url_for('app.edit_request', request_id=user_info['id']) }}" enctype="multipart/form-data">
+          {{ acceptRequestForm.hidden_tag() }}
+
+          <p><input class="btn btn-success" type="submit" value="Accept"></p>
+        </form>
+        
+        <form style="display: inline-block;" id="acceptRequestForm" method="POST" action="{{ url_for('app.edit_request', request_id=user_info['id']) }}" enctype="multipart/form-data">
+          {{ rejectRequestForm.hidden_tag() }}
+          <p><input class="btn btn-danger"  type="submit" value="Reject"></p>
+        </form>
+        
+        
+          
+      </div>
     </main>
   </div>
     

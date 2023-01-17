@@ -201,7 +201,7 @@ class DBOperator:
         # pending requestler gösterilecek ancak request tablosundaki data_source_id'yi kullanarak data_source'a ulaşıcaz ve orayı kullanarak
         # o tablodaki o data_sourcelar için admin olanı alıcaz
         query = """
-            SELECT request.id AS request_id, request.requester, request.data_source, request.request_message, request.date_created,
+            SELECT request.id AS request_id, request.requester, request.data_source, request.request_message, request.date_created, request.status,
             company.id AS company_id, company.name AS company_name,
             employee.first_name, employee.last_name,
             data_source.title
@@ -222,7 +222,8 @@ class DBOperator:
             res['data_source'],
             res['title'],
             res['request_message'],
-            res['date_created']
+            res['date_created'],
+            res['status']
             ) for res in result]
 
     def get_request_related_info_by_id(self, request_id):
@@ -230,7 +231,7 @@ class DBOperator:
             SELECT request.id, request.request_message, request.date_created, 
             company.name AS company_name, 
             employee.first_name, employee.last_name, employee.email, employee.phone_number, employee.profile_photo,
-            data_source.title, data_source.description, data_source.subscription_fee,
+            data_source.id AS data_source_id, data_source.title, data_source.description, data_source.subscription_fee,
             data_source_type.description AS data_source_type_description
             FROM request
             JOIN employee on request.requester = employee.id
@@ -242,6 +243,32 @@ class DBOperator:
 
         result = self.db.execute(query, (request_id,)).fetchone()
         return result
+
+    def accept_request(self, request_id, data_source_id, requester_id):
+        update_request_query = """
+            UPDATE request
+            SET status=2
+            WHERE id=?;
+        """
+
+        insert_data_source_permission_query = """
+            INSERT INTO data_source_permission (data_source, employee, permission_type)
+            VALUES (?, ?, ?);
+        """
+
+        self.db.execute(update_request_query, (request_id,))
+        self.db.execute(insert_data_source_permission_query, (data_source_id, requester_id, 'read'))
+        self.db.commit()
+
+    def reject_request(self, request_id):
+        query = """
+            UPDATE request
+            SET status=3
+            WHERE id=?;
+        """
+
+        self.db.execute(query, (request_id,))
+        self.db.commit()
 
     # others
 

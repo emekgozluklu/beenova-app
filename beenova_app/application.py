@@ -5,10 +5,10 @@ from flask import Blueprint, redirect, render_template, session, url_for, curren
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 
-from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm
+from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm, AcceptRequestForm, RejectRequestForm
 from beenova_app.db_queries import DBOperator
 from beenova_app.auth import login_required
-from beenova_app.utils import DataSourceFileHandler, APIRequestHandler, transform_marketplace_data
+from beenova_app.utils import DataSourceFileHandler, APIRequestHandler, transform_marketplace_data, explain_status
 
 
 bp = Blueprint('app', __name__, url_prefix='/app')
@@ -239,17 +239,27 @@ def user_account():
 def pending_requests():
     db_operator = DBOperator()
     requests_table_rows= db_operator.get_pending_requests_of_employee(session.get('user_id'))
-
+    requests_table_rows = explain_status(requests_table_rows)
     return render_template('app/pending_requests.html', requests_table_rows=requests_table_rows)
 
 @bp.route('/pending_requests/<request_id>', methods=('GET', 'POST'))
 @login_required
-def view_request(request_id):
+def edit_request(request_id):
     db_operator = DBOperator()
+    accept_form = AcceptRequestForm()
+    reject_form = RejectRequestForm()
     user_info = db_operator.get_request_related_info_by_id(request_id)
     photo_url = url_for('static', filename='profile_pics/' + user_info['profile_photo'])
     # send query if accepted
-
+    requester_id = user_info['id']
+    data_source_id = user_info['data_source_id']
     
+    if accept_form.validate_on_submit():
+        db_operator.accept_request(request_id, requester_id, data_source_id)
+        return redirect(url_for('app.pending_requests'))
 
-    return render_template('app/view_request.html', user_info=user_info, photo_url=photo_url)
+    if reject_form.validate_on_submit():
+        db_operator.reject_request(request_id)
+        return redirect(url_for('app.pending_requests'))
+
+    return render_template('app/edit_request.html', user_info=user_info, photo_url=photo_url, acceptRequestForm=accept_form, rejectRequestForm=reject_form)
