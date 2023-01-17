@@ -198,7 +198,6 @@ def upload_data_source():
             return redirect(url_for("app.company_dashboard"))
     return render_template('app/upload_data_source.html', form=form, error=error)
 
-
 @bp.route('/api/v1/<table_name>/<method>', methods=('GET',))
 @login_required
 def api_v1(table_name, method):
@@ -216,3 +215,22 @@ def api_v1(table_name, method):
         return jsonify(result)
     else:
         return jsonify({'error': 'Access denied'})
+
+@bp.route('/user_account')
+@login_required
+def user_account():
+    db_operator = DBOperator()
+    user = db_operator.get_employee_by_id(session.get('user_id'))
+    ds_table_rows = db_operator.get_data_sources_by_responsible_employee_id(session.get('user_id'))
+    user_info = {
+        'name': user['first_name'] + ' ' + user['last_name'],
+        'profile_photo': url_for('static', filename='profile_pics/' + user['profile_photo']) ,
+        'username': user['username'],
+        'email': user['email'],
+        'phone_number': user['phone_number'],
+        'company': db_operator.get_company_by_id(user['company'])['name'],
+        'table_rows': ds_table_rows
+    }
+
+    return render_template('app/user_account.html', user_info=user_info)
+
