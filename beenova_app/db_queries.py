@@ -5,15 +5,6 @@ class DBOperator:
     def __init__(self):
         self.db = get_db()
 
-    # helpers
-    def get_data_source_type_name(self, data_source_type_id):
-        query = """
-            SELECT name FROM data_source_type WHERE id=?;
-        """
-
-        result = self.db.execute(query, (data_source_type_id,)).fetchone()
-        return result["name"]
-
     # employee operations
     def create_employee(self, first_name, last_name, created_by, username, email, company, password_hash,
                         phone_number=None, is_admin=0, is_company_admin=0, is_activated=0, profile_photo="default_user.jpg"):
@@ -80,6 +71,14 @@ class DBOperator:
         self.db.execute(query, (company_admin_id,))
         self.db.commit()
 
+    def get_employees_of_company(self, company_id):
+        query = """
+            SELECT * FROM employee WHERE company=?;
+        """
+
+        result = self.db.execute(query, str(company_id)).fetchall()
+        return [(res["id"], res["first_name"] + res["last_name"]) for res in result]
+
     # company operations
     def register_company(self, name, admin_id):
         query = """
@@ -106,6 +105,8 @@ class DBOperator:
         result = self.db.execute(query, (company_id,)).fetchone()
         return result
 
+    # data source operations
+
     def get_data_source_by_id(self, data_source_id):
         query = """
             SELECT * FROM data_source WHERE id=?;
@@ -113,47 +114,6 @@ class DBOperator:
 
         result = self.db.execute(query, (str(data_source_id),)).fetchone()
         return result
-
-    def get_data_source_types(self):
-        # get data source types from db
-        query = """
-            SELECT * FROM data_source_type;
-        """
-
-        result = self.db.execute(query).fetchall()
-        return [(res["id"], res["name"]) for res in result]
-
-    def get_employees_of_company(self, company_id):
-        query = """
-            SELECT * FROM employee WHERE company=?;
-        """
-
-        result = self.db.execute(query, str(company_id)).fetchall()
-        return [(res["id"], res["first_name"] + res["last_name"]) for res in result]
-
-    # method signatures for other operations
-    def create_data_source(self, title, description, is_published, type_id, data_root, is_private, subscription_fee,
-                           responsible_employee, created_by):
-
-        query = """
-            INSERT INTO data_source (title, description, is_published, type_id, data_root, is_private, subscription_fee,
-                                    responsible_employee, created_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
-        """
-
-        self.db.execute(query, (title, description, is_published, type_id, data_root, is_private, subscription_fee,
-                                responsible_employee, created_by))
-        self.db.commit()
-
-    def update_datasource_table_name(self, data_source_id, table_name):
-        query = """
-            UPDATE data_source
-            SET database_table_name=?
-            WHERE id=?;
-        """
-
-        self.db.execute(query, (table_name, data_source_id))
-        self.db.commit()
 
     def get_data_sources(self):
 
@@ -183,6 +143,108 @@ class DBOperator:
 
         return result
 
+    def update_datasource_table_name(self, data_source_id, table_name):
+        query = """
+            UPDATE data_source
+            SET database_table_name=?
+            WHERE id=?;
+        """
+
+        self.db.execute(query, (table_name, data_source_id))
+        self.db.commit()
+
+    # data source type operations
+
+    def create_data_source(self, title, description, is_published, type_id, data_root, is_private, subscription_fee,
+                           responsible_employee, created_by):
+
+        query = """
+            INSERT INTO data_source (title, description, is_published, type_id, data_root, is_private, subscription_fee,
+                                    responsible_employee, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """
+
+        self.db.execute(query, (title, description, is_published, type_id, data_root, is_private, subscription_fee,
+                                responsible_employee, created_by))
+        self.db.commit()
+
+    def get_data_source_type_name(self, data_source_type_id):
+        query = """
+            SELECT name FROM data_source_type WHERE id=?;
+        """
+
+        result = self.db.execute(query, (data_source_type_id,)).fetchone()
+        return result["name"]
+
+    def get_data_source_types(self):
+        # get data source types from db
+        query = """
+            SELECT * FROM data_source_type;
+        """
+
+        result = self.db.execute(query).fetchall()
+        return [(res["id"], res["name"]) for res in result]
+
+    # request operations
+
+    def create_request(self, requester, data_source, request_message):
+
+        query = """
+            INSERT INTO request (requester, data_source, request_message, date_updated, status)
+            VALUES (?, ?, ?, DATETIME('NOW'), ?);
+        """
+
+        self.db.execute(query, (requester, data_source, request_message, 0))
+        self.db.commit()
+
+    def get_pending_requests_of_employee(self, user_id):
+        # pending requestler gösterilecek ancak request tablosundaki data_source_id'yi kullanarak data_source'a ulaşıcaz ve orayı kullanarak
+        # o tablodaki o data_sourcelar için admin olanı alıcaz
+        query = """
+            SELECT request.id AS request_id, request.requester, request.data_source, request.request_message, request.date_created,
+            company.id AS company_id, company.name AS company_name,
+            employee.first_name, employee.last_name,
+            data_source.title
+            FROM request
+            JOIN employee on request.requester = employee.id
+            JOIN company on employee.company = company.id
+            JOIN data_source on request.data_source = data_source.id
+            WHERE request.status=1 AND data_source.responsible_employee=?;
+        """
+
+        result = self.db.execute(query, (user_id,)).fetchall()
+        return [(
+            res['request_id'],
+            res['company_name'],
+            res['requester'],
+            res['first_name'],
+            res['last_name'],
+            res['data_source'],
+            res['title'],
+            res['request_message'],
+            res['date_created']
+            ) for res in result]
+
+    def get_request_related_info_by_id(self, request_id):
+        query = """
+            SELECT request.id, request.request_message, request.date_created, 
+            company.name AS company_name, 
+            employee.first_name, employee.last_name, employee.email, employee.phone_number, employee.profile_photo,
+            data_source.title, data_source.description, data_source.subscription_fee,
+            data_source_type.description AS data_source_type_description
+            FROM request
+            JOIN employee on request.requester = employee.id
+            JOIN company on employee.company = company.id
+            JOIN data_source on request.data_source = data_source.id
+            JOIN data_source_type on data_source.type_id = data_source_type.id
+            WHERE request.id=?;
+        """
+
+        result = self.db.execute(query, (request_id,)).fetchone()
+        return result
+
+    # others
+
     def create_data_usage(self, data_source, data_user, start_time, end_time, usage_amount, subscription):
         pass
 
@@ -193,16 +255,6 @@ class DBOperator:
     def create_subscription(self, subscriber, data_source, request, subscription_started, subscription_ended,
                             subscription_type, status):
         pass
-
-    def create_request(self, requester, data_source, request_message):
-        
-        query = """
-            INSERT INTO request (requester, data_source, request_message, date_updated, status)
-            VALUES (?, ?, ?, DATETIME('NOW'), ?);
-        """
-
-        self.db.execute(query, (requester, data_source, request_message, 0))
-        self.db.commit()
 
     def create_request_demo(self, first_name, last_name, email, company, phone_number, message):
 

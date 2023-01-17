@@ -234,3 +234,22 @@ def user_account():
 
     return render_template('app/user_account.html', user_info=user_info)
 
+@bp.route('/pending_requests')
+@login_required
+def pending_requests():
+    db_operator = DBOperator()
+    requests_table_rows= db_operator.get_pending_requests_of_employee(session.get('user_id'))
+
+    return render_template('app/pending_requests.html', requests_table_rows=requests_table_rows)
+
+@bp.route('/pending_requests/<request_id>', methods=('GET', 'POST'))
+@login_required
+def view_request(request_id):
+    db_operator = DBOperator()
+    user_info = db_operator.get_request_related_info_by_id(request_id)
+    photo_url = url_for('static', filename='profile_pics/' + user_info['profile_photo'])
+    # send query if accepted
+
+    
+
+    return render_template('app/view_request.html', user_info=user_info, photo_url=photo_url)
