@@ -1,0 +1,56 @@
+{% extends 'layout.html' %} 
+{% set active_page = "request_data_source" %} 
+
+{% block title %} Request Data Source {% endblock %} 
+{% block header %} 
+{% endblock %} 
+
+{% from "render_form_field.html" import render_field %} 
+
+{% block content %}
+
+<div class="container">
+    <main role="main" class="col-md ml-sm-auto col-lg" style="margin-top: 20px">
+      <h1 class="h1">{{ user_info['title'] }} Request</h1>
+      <hr />
+  
+      <div class="request-section">
+        <div class="request-body">
+            <h2 class="request-heading"><b>Request Details</b></h2>
+
+            <p class="text-secondary"><b>Request ID:</b> {{ user_info['id'] }}</p>
+            <p class="text-secondary"><b>Data Source Title:</b> {{ user_info['title'] }}</p>
+            <p class="text-secondary"><b>Request Message:</b> {{ user_info['request_message'] }}</p>
+            <p class="text-secondary"><b>Request Date Created:</b> {{ user_info['date_created'] }}</p>
+            <p class="text-secondary"><b>Data Source Description:</b> {{ user_info['description'] }}</p>
+            <p class="text-secondary"><b>Subscription Fee:</b> {{ user_info['subscription_fee'] }}</p>
+            <p class="text-secondary"><b>Data Source Type Description:</b> {{ user_info['data_source_type_description'] }}</p>
+
+        </div>
+      </div>
+      <hr />
+      <div class="account-section media">
+        <img
+          class="rounded-circle accoount-img"
+          src="{{ photo_url }}"
+          style="padding: 15px 20px 0px 0px; display: inline;"
+        />
+        <div class="requester-body">
+          <h2 class="requester-heading">
+            <b>Requester Profile</b>
+          </h2>
+          <p class="text-secondary"><b>Name:</b> {{ user_info['first_name'] }} {{ user_info['last_name'] }}</p> 
+          <p class="text-secondary"><b>Company:</b> {{ user_info['company_name'] }}</p>
+          <p class="text-secondary">
+            <b>Phone Number:</b> {{ user_info['phone_number'] }}
+          </p>
+          <p class="text-secondary"><b>E-mail:</b> {{ user_info['email'] }}</p>
+          <hr />
+        </div>
+      </div>
+  
+    </main>
+  </div>
+    
+{% endblock content %}
+

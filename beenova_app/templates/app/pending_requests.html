@@ -1,0 +1,84 @@
+{% extends 'layout.html' %} 
+{% set active_page = "request_data_source" %} 
+
+{% block title %} Pending Requests {% endblock %} 
+{% block header %} 
+{% endblock %} 
+
+{% from "render_form_field.html" import render_field %} 
+
+{% block content %}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Pending Requests</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                            <thead>
+                    <tr role="row">
+                        <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Request ID</th>
+                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Company</th>
+                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Requester ID</th>
+                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Requester</th>
+                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Data Source ID</th>
+                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Data Source</th>
+                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Message</th>
+                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Date Created</th>
+                    </tr>
+                </thead>
+                    <tbody>
+                            {%for i in range(requests_table_rows|length)%}
+                                <tr class="{{'odd' if i%2 == 0 else 'even' }}">
+                                    <td class="sorting_1" id="request-id">{{ requests_table_rows[i][0] }}</td>
+                                    <td id="company">{{ requests_table_rows[i][1] }}</td>
+                                    <td id="data-requester_id">{{ requests_table_rows[i][2] }}</td>
+                                    <td id="requester">{{ requests_table_rows[i][3] }} {{ requests_table_rows[i][4] }}</td>                                    
+                                    <td id="data-source-id">{{ requests_table_rows[i][5] }}</td>
+                                    <td id="data-source-title">{{ requests_table_rows[i][6] }}</td>
+                                    <td id="message">{{ requests_table_rows[i][7] }}</td>
+                                    <td id="data-created">{{ moment(requests_table_rows[i][8]).fromNow() }}</td>
+                                    <td style="text-align: center; width: 100px">
+                                        <button  type="button" class="btn btn-primary answer-request-button" data-toggle="modal" data-target="#answerRequest">
+                                            <i class="fas fa-pen">
+                                            </i>
+                                            <a style="color: white;" href="{{ url_for('app.view_request', request_id=requests_table_rows[i][0]) }}">View</a>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-7">
+                        <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                            <ul class="pagination">
+                                <li class="paginate_button page-item previous disabled" id="dataTable_previous"><a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
+                                <li class="paginate_button page-item active"><a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">1</a></li>
+                                <li class="paginate_button page-item next" id="dataTable_next"><a href="#" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ moment.include_moment() }}
+<script src="{{ url_for('static', filename='vendor/chart.js/Chart.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+
+
+{% endblock %}
