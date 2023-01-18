@@ -115,7 +115,7 @@ def register_employee():
                 is_activated=0
             )
 
-            return redirect(url_for("index"))
+            return redirect(url_for("app.company_dashboard"))
     return render_template('app/register_employee.html', form=form, error=error)
 
 
@@ -149,7 +149,7 @@ def request_data_source(data_source_id):
             db_operator.create_request(requester=requester, data_source=data_source_id,
                                        request_message=request_message)
 
-            return redirect(url_for("index"))
+            return redirect(url_for("app.company_dashboard"))
     return render_template('app/request_data_source.html', form=form, error=error, requested_ds=requested_ds)
 
 

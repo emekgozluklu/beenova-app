@@ -3,7 +3,7 @@
     <title>{% block title %}{% endblock %} - Beenova </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fontawesome-free/css/fontawesome.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}"/>
     {% block more_css %} {% endblock %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap-4.4.1-dist/css/bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bootstrap-4.4.1-dist/css/bootstrap-grid.css') }}">
@@ -22,7 +22,7 @@
 <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
   <div class="container">
         <a class="navbar-brand" href="{{ url_for('app.company_dashboard') }}">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" height=45" class="d-inline-block align-top" alt="">
+            <img src="{{ url_for('static', filename='images/logo-sidetoside-white.png') }}" height=50" class="d-inline-block align-top navbar-logo" alt="">
         </a>  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -32,7 +32,7 @@
                 {%  if session.user_is_admin %}
                 <ul class="navbar-nav">
                     <li class="nav-item {{ 'active' if active_page == 'homepage' else '' }}">
-                        <a class="nav-link" href="{{ url_for("index") }}">Homepage <span class="sr-only"></span></a>
+                        <a class="nav-link" href="{{ url_for("admin.register_company") }}">Homepage <span class="sr-only"></span></a>
                     </li>
                     <li class="nav-item {{ 'active' if active_page == 'create_company' else '' }}">
                         <a class="nav-link" href="{{ url_for("admin.register_company") }}">Register Company <span class="sr-only"></span></a>
@@ -50,16 +50,12 @@
                     <li class="nav-item {{ 'active' if active_page == 'marketplace' else '' }}">
                         <a class="nav-link" href="{{ url_for("app.marketplace") }}">Marketplace <span class="sr-only"></span></a>
                     </li>
-
-                    <li class="nav-item {{ 'active' if active_page == 'upload_data_source' else '' }}">
-                        <a class="nav-link" href="{{ url_for("app.upload_data_source") }}">Create <span class="sr-only"></span></a>
-                    </li>
-
                       <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Company
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                          <a class="dropdown-item" href="{{ url_for("app.upload_data_source") }}">Upload Data Source</a>
                           <a class="dropdown-item" href="{{ url_for("app.register_employee") }}">Register Employee</a>
                           <a class="dropdown-item" href="{{ url_for("app.pending_requests") }}">Pending Requests</a>
 

@@ -59,10 +59,10 @@ def login():
             session["user_company_id"] = user["company"]
 
             if session["user_is_admin"]:
-                return redirect(url_for("index"))
+                return redirect(url_for("admin.register_company"))
                 # return redirect(url_for("admin.index"))
             else:
-                return redirect(url_for("index"))
+                return redirect(url_for("app.company_dashboard"))
                 # return redirect(url_for("employee.index"))
 
     return render_template("auth/login.html", form=form, error=error)

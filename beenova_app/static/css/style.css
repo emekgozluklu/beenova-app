@@ -20,3 +20,7 @@
 .navbar{
     margin-bottom: 2rem !important;
 }
+
+.navbar-logo {
+    margin-right: 2rem;
+}
