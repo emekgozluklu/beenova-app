@@ -5,7 +5,7 @@ from flask import Blueprint, redirect, render_template, session, url_for, curren
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 
-from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm, AcceptRequestForm, RejectRequestForm
+from beenova_app.forms import RegisterEmployeeForm, CreateDataSourceForm, RequestDataSourceForm, AcceptRequestForm, RejectRequestForm, SendRequestForm
 from beenova_app.db_queries import DBOperator
 from beenova_app.auth import login_required
 from beenova_app.utils import DataSourceFileHandler, APIRequestHandler, transform_marketplace_data, explain_status
@@ -31,6 +31,7 @@ def marketplace():
 @login_required
 def data_source_detail(data_source_id):
     db_operator = DBOperator()
+    send_request_form = SendRequestForm()
     data_source_id = int(data_source_id)
     data_source = db_operator.get_data_source_by_id(data_source_id)
     data_source = dict(data_source) if data_source else None
@@ -38,13 +39,16 @@ def data_source_detail(data_source_id):
     user_managed_data_sources = db_operator.get_user_managed_data_source_ids(session['user_id'])
     user_subscribed_data_sources = db_operator.get_user_subscribed_data_source_ids(session['user_company_id'])
 
+    maintainer = db_operator.get_maintainer_of_data_source(data_source_id)
     user_is_admin = data_source_id in user_managed_data_sources
     user_is_subscribed = data_source_id in user_subscribed_data_sources
 
     return render_template('app/data_source_detail.html',
                            data_source=data_source,
+                           maintainer=maintainer,
                            user_is_admin=user_is_admin,
-                           user_is_subscribed=user_is_subscribed
+                           user_is_subscribed=user_is_subscribed,
+                           send_request_form=send_request_form
                            )
 
 
