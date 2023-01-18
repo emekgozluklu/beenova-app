@@ -11,18 +11,72 @@
 {% endblock %}
 
 
+
+
 {% block content %}
 
-    {% if user_is_admin %}
-        User is admin
+<div class="container">
+    <main role="main" class="col-md ml-sm-auto col-lg" style="margin-top: 20px">
+      <h1 class="h1">{{ data_source['title'] }} Data</h1>
+      <hr />
+  
+      <div class="request-section">
+        <div class="request-body">
+            <h2 class="request-heading"><b>Data Source Details</b></h2>
+
+            <p class="text-secondary"><b>Data Source Title:</b> {{ data_source['title'] }}</p>
+            <p class="text-secondary"><b>Description:</b> {{ data_source['description'] }}</p>
+            <p class="text-secondary"><b>Created:</b> {{ data_source['created_at'] }}</p>
+            <p class="text-secondary"><b>Published:</b> {{ data_source['published_at'] }}</p>
+            <p class="text-secondary"><b>Data Source Type:</b> {{ data_source['type'] }}</p>
+            <p class="text-secondary"><b>Subscription Free:</b> {{ data_source['subscription_free'] }}</p>
+
+        </div>
+      </div>
+      <hr />
+      <div class="account-section media">
+        <img
+          class="rounded-circle accoount-img"
+          src="{{ url_for('static', filename='profile_pics/' + maintainer['profile_photo']) }}"
+          style="padding: 15px 20px 0px 0px; display: inline;"
+        />
+        <div class="requester-body">
+          <h2 class="requester-heading">
+            <b>Maintainer Profile</b>
+          </h2>
+          <p class="text-secondary"><b>Name:</b> {{ maintainer['first_name'] }} {{ maintainer['last_name'] }}</p> 
+          <p class="text-secondary"><b>Company:</b> {{ maintainer['company_name'] }}</p>
+          <p class="text-secondary">
+            <b>Phone Number:</b> {{ maintainer['phone_number'] }}
+          </p>
+          <p class="text-secondary"><b>E-mail:</b> {{ maintainer['email'] }}</p>
+          <hr />
+
+        </div>
+        
+      </div>
+      
+      {% if user_is_admin %}
+      <p><input class="btn btn-dark" type="submit" value="Already Admin"></p>
 
     {% elif user_is_subscribed %}
-        User is subscribed
+      <p><input class="btn btn-dark" type="submit" value="Already Subscribed"></p>
 
     {% else %}
-        {{ data_source }}
+    <div class="options">
+      <form style="display: inline-block; margin-right: 15px;" id="sendRequestForm" method="POST" action="{{ url_for('app.request_data_source', data_source_id=data_source['id']) }}" enctype="multipart/form-data">
+        {{ send_request_form.hidden_tag() }}
+
+        <p><input class="btn btn-primary" type="submit" value="Send Request"></p>
+      </form>    
+    </div>        
 
     {% endif %}
+
+    </main>
+</div>
+    
+    
 
 
 {% endblock %}

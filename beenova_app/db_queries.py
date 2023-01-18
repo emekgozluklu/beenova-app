@@ -523,3 +523,14 @@ class DBOperator:
 
 
 
+
+    def get_maintainer_of_data_source(self, data_source_id):
+        query = """
+            SELECT * 
+            FROM data_source 
+            JOIN employee ON data_source.responsible_employee = employee.id
+            WHERE data_source.id=?;
+        """
+
+        result = self.db.execute(query, (data_source_id,)).fetchone()
+        return result
