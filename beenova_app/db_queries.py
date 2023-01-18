@@ -413,3 +413,113 @@ class DBOperator:
 
         result = self.db.execute(query, (company_id,)).fetchall()
         return [res['id'] for res in result]
+
+    def get_number_of_data_sources_of_company(self, company_id):
+        query = """
+            SELECT count(*) cnt FROM data_source ds join employee e on ds.responsible_employee = e.id WHERE e.company=?;
+        """
+
+        result = self.db.execute(query, (company_id,)).fetchone()['cnt']
+        return int(result)
+
+    def get_number_of_subscriptions_of_company(self, company_id):
+        query = """
+            SELECT count(*) cnt FROM subscription sub join data_source ds on sub.data_source = ds.id 
+                join employee e on ds.responsible_employee = e.id 
+                WHERE e.company=?;
+        """
+
+        result = self.db.execute(query, (company_id,)).fetchone()['cnt']
+        return int(result)
+
+    def get_bandwidth_of_company(self, company_id, unit="GB"):
+        query = """
+            SELECT sum(usage_amount) usg FROM data_usage du join data_source ds on du.data_source = ds.id 
+            where du.data_user=?;
+        """
+
+        result = self.db.execute(query, (company_id,)).fetchone()['usg']
+        result = 0 if result is None else result
+
+        if unit == "GB":
+            return result * 1e-6
+        elif unit == "MB":
+            return result * 1e-3
+        else:
+            return result
+
+    def get_number_of_pending_requests(self, company_id):
+        query = """
+            SELECT count(*) cnt FROM request WHERE requester=? and status=?;
+        """
+
+        result = self.db.execute(query, (company_id, 1)).fetchone()['cnt']
+        return int(result)
+
+    def get_dashboard_numbers(self, company_id):
+        num_data_sources = self.get_number_of_data_sources_of_company(company_id)
+        num_subscriptions = self.get_number_of_subscriptions_of_company(company_id)
+        bandwidth = self.get_bandwidth_of_company(company_id)
+        num_pending_requests = self.get_number_of_pending_requests(company_id)
+
+        return {
+            "num_data_sources": num_data_sources,
+            "num_subscriptions": num_subscriptions,
+            "bandwidth": bandwidth,
+            "num_pending_requests": num_pending_requests
+        }
+
+    def get_subscriptions_of_company_for_dashboard_table(self, company_id):
+        query = """
+            SELECT 
+                ds.title as data_source_title,
+                dst.name as data_source_type,
+                c.name as company_name,
+                ds.url_endpoint as data_source_url_endpoint,
+                sub.subscription_started as subscription_date
+            FROM subscription sub 
+                join data_source ds on sub.data_source = ds.id 
+                join employee e on ds.responsible_employee = e.id 
+                join company c on e.company = c.id
+                join data_source_type dst on ds.type_id = dst.id
+                WHERE e.company=?;
+        """
+
+        result = self.db.execute(query, (company_id,)).fetchall()
+        return [{
+            "data_source_title": res["data_source_title"],
+            "data_source_type": res["data_source_type"],
+            "company_name": res["company_name"],
+            "data_source_url_endpoint": res["data_source_url_endpoint"],
+            "subscription_date": res["subscription_date"]
+        } for res in result]
+
+    def get_data_usages_of_company(self, company_id):
+        query = """
+            SELECT 
+                ds.title as data_source_title,
+                dst.name as data_source_type,
+                du.usage_amount as usage_amount
+            FROM data_usage du 
+                join data_source ds on du.data_source = ds.id 
+                join employee e on ds.responsible_employee = e.id 
+                join data_source_type dst on ds.type_id = dst.id
+                WHERE e.company=?;
+        """
+
+        result = self.db.execute(query, (company_id,)).fetchall()
+        return [{
+            "data_source_title": res["data_source_title"],
+            "data_source_type": res["data_source_type"],
+            "usage_amount": res["usage_amount"],
+            "usage_date": res["usage_date"]
+        } for res in result]
+
+
+
+
+
+
+
+
+

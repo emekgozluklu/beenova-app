@@ -52,15 +52,17 @@ def data_source_detail(data_source_id):
 @login_required
 def company_dashboard():
     db_operator = DBOperator()
+
+    numbers = db_operator.get_dashboard_numbers(session['user_company_id'])
     ds_table_rows = db_operator.get_data_sources_of_company_for_dashboard_table(session.get('user_company_id'))
+    subscriptions = db_operator.get_subscriptions_of_company_for_dashboard_table(session.get('user_company_id'))
+    data_usage_per_ds = db_operator.get_data_usages_of_company(session.get('user_company_id'))
+
     data = {
-        'numbers': defaultdict(int),
-        'table_rows': ds_table_rows,
-        'data_usages': {
-            'DS1': 5.2,
-            'DS2': 4.9,
-            'DS3': 9.1
-        }
+        'numbers': numbers,
+        'data_sources': ds_table_rows,
+        'subscriptions': subscriptions,
+        'data_usages': data_usage_per_ds
     }
     return render_template('app/company_dashboard.html', data=data)
 

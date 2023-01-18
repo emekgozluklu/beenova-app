@@ -31,7 +31,7 @@ Dashboard
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-m font-weight-bold text-primary text-uppercase mb-1">Data Sources</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"> {{ data['numbers']['data_sources'] }} </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"> {{ data['numbers']['num_data_sources'] }} </div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -48,7 +48,7 @@ Dashboard
                         <div class="col mr-2">
                             <div class="text-m font-weight-bold text-success text-uppercase mb-1">
                                 Subscriptions</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data['numbers']['subscriptions'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data['numbers']['num_subscriptions'] }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -69,7 +69,7 @@ Dashboard
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ data['numbers']['bandwith'] }} GB</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ data['numbers']['bandwidth'] }} GB</div>
                                 </div>
                             </div>
                         </div>
@@ -89,7 +89,7 @@ Dashboard
                         <div class="col mr-2">
                             <div class="text-m font-weight-bold text-warning text-uppercase mb-1">
                                 Pending Requests</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data['numbers']['pending_requests'] }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data['numbers']['num_pending_requests'] }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -121,13 +121,13 @@ Dashboard
                         </tr>
                     </thead>
                         <tbody>
-                                {%for i in range(data['table_rows']|length)%}
+                                {%for i in range(data['data_sources']|length)%}
                                     <tr class="{{'odd' if i%2 == 0 else 'even' }}">
-                                        <td class="sorting_1">{{ data['table_rows'][i][0] }}</td>
-                                        <td>{{ data['table_rows'][i][1] }}</td>
-                                        <td>{{ data['table_rows'][i][2] }}</td>
-                                        <td>{{ data['table_rows'][i][3] }}</td>
-                                        <td>{{ moment(data['table_rows'][i][4]).fromNow() }}</td>
+                                        <td class="sorting_1">{{ data['data_sources'][i][0] }}</td>
+                                        <td>{{ data['data_sources'][i][1] }}</td>
+                                        <td>{{ data['data_sources'][i][2] }}</td>
+                                        <td>{{ data['data_sources'][i][3] }}</td>
+                                        <td>{{ moment(data['data_sources'][i][4]).fromNow() }}</td>
                                     </tr>
                                 {%endfor%}
                         </tbody>
@@ -163,21 +163,23 @@ Dashboard
                             <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
                         <tr role="row">
-                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Name</th>
+                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Source</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Type</th>
                             <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Provider</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Maintainer</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Subscription Date </th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">API Endpoint </th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 1rem;">Subscription Date</th>
                             <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 1rem;">Edit</th>
                         </tr>
                     </thead>
                         <tbody>
-                                {%for i in range(data['table_rows']|length)%}
+                                {%for i in range(data['subscriptions']|length)%}
                                     <tr class="{{'odd' if i%2 == 0 else 'even' }}">
-                                        <td class="sorting_1">{{ data['table_rows'][i][0] }}</td>
-                                        <td>{{ data['table_rows'][i][1] }}</td>
-                                        <td>{{ data['table_rows'][i][2] }}</td>
-                                        <td>{{ data['table_rows'][i][3] }}</td>
-                                        <td>{{ moment(data['table_rows'][i][4]).fromNow() }}</td>
+                                        <td class="sorting_1">{{ data['subscriptions'][i]['data_source_title'] }}</td>
+                                        <td>{{ data['subscriptions'][i]['data_source_type'] }}</td>
+                                        <td>{{ data['subscriptions'][i]['company_name'] }}</td>
+                                        <td>{{ data['subscriptions'][i]['data_source_url_endpoint'] }}</td>
+                                        <td>{{ moment(data['subscriptions'][i]['subscription_date']).fromNow() }}</td>
+                                        <td style="text-align: center;"> <a href="#"><i class="fas fa-pencil-alt"></i> </a></td>
                                     </tr>
                                 {%endfor%}
                         </tbody>
