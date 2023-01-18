@@ -31,7 +31,9 @@ Register Employee
                 {{ render_field(form.last_name, placeholder="") }}<br>
                 {{ render_field(form.email, placeholder="") }}<br>
                 {{ render_field(form.phone_number, placeholder="+49 XXX XXX XXXX") }}<br>
-                {{ render_field(form.is_company_admin) }}<br>
+                <div class="form-check form-check-inline" style="margin-bottom: 40px;">
+                    {{ form.is_company_admin.label(class="form-check-label") }} {{ form.is_company_admin(class="form-check-input", style="width: 20px; height: 20px; margin-top: 4px; margin-left: 10px") }} <br>
+                </div>
                 {{ render_field(form.password, placeholder="") }}<br>
                 {{ render_field(form.confirm, placeholder="") }}<br>
 
