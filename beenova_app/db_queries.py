@@ -204,7 +204,7 @@ class DBOperator:
             SELECT request.id AS request_id, request.requester, request.data_source, request.request_message, request.date_created, request.status,
             company.id AS company_id, company.name AS company_name,
             employee.first_name, employee.last_name,
-            data_source.title
+            data_source.title AS data_source_title
             FROM request
             JOIN employee on request.requester = employee.id
             JOIN company on employee.company = company.id
@@ -219,8 +219,7 @@ class DBOperator:
             res['requester'],
             res['first_name'],
             res['last_name'],
-            res['data_source'],
-            res['title'],
+            res['data_source_title'],
             res['request_message'],
             res['date_created'],
             res['status']

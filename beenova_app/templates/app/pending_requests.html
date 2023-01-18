@@ -22,11 +22,8 @@
                             <thead>
                     <tr role="row">
                         <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Request ID</th>
-                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Company</th>
-
-                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Requester</th>
-
                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Data Source</th>
+                        <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Company</th>
                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Message</th>
                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Date Created</th>
                         <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Status</th>
@@ -36,14 +33,11 @@
                             {%for i in range(requests_table_rows|length)%}
                                 <tr class="{{'odd' if i%2 == 0 else 'even' }}">
                                     <td class="sorting_1" id="request-id">{{ requests_table_rows[i][0] }}</td>
-                                    
-                                    <td id="data-requester_id">{{ requests_table_rows[i][2] }}</td>
-
                                     <td id="data-source-id">{{ requests_table_rows[i][5] }}</td>
-                                    <td id="data-source-title">{{ requests_table_rows[i][6] }}</td>
-                                    <td id="message">{{ requests_table_rows[i][7]|truncate(75, True) }}</td>
-                                    <td id="data-created">{{ moment(requests_table_rows[i][8]).fromNow() }}</td>
-                                    <td id="status">{{ requests_table_rows[i][9] }}</td>
+                                    <td id="data-requester_id">{{ requests_table_rows[i][1] }}</td>
+                                    <td id="message">{{ requests_table_rows[i][6]|truncate(75, True) }}</td>
+                                    <td id="data-created">{{ moment(requests_table_rows[i][7]).fromNow() }}</td>
+                                    <td id="status">{{ requests_table_rows[i][8] }}</td>
                                     <td style="text-align: center; width: 100px">
                                         <button  type="button" class="btn btn-primary answer-request-button" data-toggle="modal" data-target="#answerRequest">
                                             <i class="fas fa-pen">
