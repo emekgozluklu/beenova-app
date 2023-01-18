@@ -534,3 +534,11 @@ class DBOperator:
 
         result = self.db.execute(query, (data_source_id,)).fetchone()
         return result
+
+    def get_data_source_type_by_id(self, data_source_type_id):
+        query = """
+            SELECT * FROM data_source_type WHERE id=?;
+        """
+
+        result = self.db.execute(query, (data_source_type_id,)).fetchone()
+        return result
