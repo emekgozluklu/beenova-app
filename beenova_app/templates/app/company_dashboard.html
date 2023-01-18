@@ -16,8 +16,10 @@ Dashboard
 {% block content %}
 
     {# title #}
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Company Dashboard</h1>
+    <div class="row">
+        <div class="col-md ml-sm-auto col-lg">
+            <h1 class="h3 mb-0 text-gray-800">Company Dashboard<a href="{{ url_for("app.upload_data_source") }}" class="btn btn-success float-right" role="button">Upload Data Source</a></h1><hr/>
+        </div>
     </div>
 
 
@@ -45,7 +47,7 @@ Dashboard
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-m font-weight-bold text-success text-uppercase mb-1">
-                                {{ data['numbers']['subscriptions'] }}</div>
+                                Subscriptions</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ data['numbers']['subscriptions'] }}</div>
                         </div>
                         <div class="col-auto">
@@ -98,55 +100,105 @@ Dashboard
         </div>
     </div>
 
-    {# Table #}
+    {# data sources #}
     <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Sources Provided</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
-                                                <thead>
-                                        <tr role="row">
-                                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Name</th>
-                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Type</th>
-                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Active Users</th>
-                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Maintainer</th>
-                                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Created At</th>
-                                        </tr>
-                                    </thead>
-                                        <tbody>
-                                                {%for i in range(data['table_rows']|length)%}
-                                                    <tr class="{{'odd' if i%2 == 0 else 'even' }}">
-                                                        <td class="sorting_1">{{ data['table_rows'][i][0] }}</td>
-                                                        <td>{{ data['table_rows'][i][1] }}</td>
-                                                        <td>{{ data['table_rows'][i][2] }}</td>
-                                                        <td>{{ data['table_rows'][i][3] }}</td>
-                                                        <td>{{ moment(data['table_rows'][i][4]).fromNow() }}</td>
-                                                    </tr>
-                                                {%endfor%}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-7">
-                                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
-                                                <ul class="pagination">
-                                                    <li class="paginate_button page-item previous disabled" id="dataTable_previous"><a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
-                                                    <li class="paginate_button page-item active"><a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">1</a></li>
-                                                    <li class="paginate_button page-item next" id="dataTable_next"><a href="#" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Data Sources</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                                <thead>
+                        <tr role="row">
+                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Type</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Active Users</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Maintainer</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Created At</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                                {%for i in range(data['table_rows']|length)%}
+                                    <tr class="{{'odd' if i%2 == 0 else 'even' }}">
+                                        <td class="sorting_1">{{ data['table_rows'][i][0] }}</td>
+                                        <td>{{ data['table_rows'][i][1] }}</td>
+                                        <td>{{ data['table_rows'][i][2] }}</td>
+                                        <td>{{ data['table_rows'][i][3] }}</td>
+                                        <td>{{ moment(data['table_rows'][i][4]).fromNow() }}</td>
+                                    </tr>
+                                {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                                <ul class="pagination">
+                                    <li class="paginate_button page-item previous disabled" id="dataTable_previous"><a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
+                                    <li class="paginate_button page-item active"><a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">1</a></li>
+                                    <li class="paginate_button page-item next" id="dataTable_next"><a href="#" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# subscriptions #}
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Subscriptions</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                                <thead>
+                        <tr role="row">
+                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Provider</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Maintainer</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Subscription Date </th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 1rem;">Edit</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                                {%for i in range(data['table_rows']|length)%}
+                                    <tr class="{{'odd' if i%2 == 0 else 'even' }}">
+                                        <td class="sorting_1">{{ data['table_rows'][i][0] }}</td>
+                                        <td>{{ data['table_rows'][i][1] }}</td>
+                                        <td>{{ data['table_rows'][i][2] }}</td>
+                                        <td>{{ data['table_rows'][i][3] }}</td>
+                                        <td>{{ moment(data['table_rows'][i][4]).fromNow() }}</td>
+                                    </tr>
+                                {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                                <ul class="pagination">
+                                    <li class="paginate_button page-item previous disabled" id="dataTable_previous"><a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
+                                    <li class="paginate_button page-item active"><a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">1</a></li>
+                                    <li class="paginate_button page-item next" id="dataTable_next"><a href="#" aria-controls="dataTable" data-dt-idx="7" tabindex="0" class="page-link">Next</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {# graphs #}
     <div class="row">
@@ -171,7 +223,7 @@ Dashboard
             <!-- Project Card Example -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">How can we use it</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Pending Requests</h6>
                 </div>
                 <div class="card-body">
                     <h4 class="small font-weight-bold">Server Migration <span class="float-right">20%</span></h4>

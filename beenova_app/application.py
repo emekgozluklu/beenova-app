@@ -238,7 +238,7 @@ def user_account():
 @login_required
 def pending_requests():
     db_operator = DBOperator()
-    requests_table_rows= db_operator.get_pending_requests_of_employee(session.get('user_id'))
+    requests_table_rows = db_operator.get_pending_requests_of_employee(session.get('user_id'))
     requests_table_rows = explain_status(requests_table_rows)
     return render_template('app/pending_requests.html', requests_table_rows=requests_table_rows)
 

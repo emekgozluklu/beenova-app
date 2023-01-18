@@ -41,7 +41,7 @@
 
                                     <td id="data-source-id">{{ requests_table_rows[i][5] }}</td>
                                     <td id="data-source-title">{{ requests_table_rows[i][6] }}</td>
-                                    <td id="message">{{ requests_table_rows[i][7] }}</td>
+                                    <td id="message">{{ requests_table_rows[i][7]|truncate(75, True) }}</td>
                                     <td id="data-created">{{ moment(requests_table_rows[i][8]).fromNow() }}</td>
                                     <td id="status">{{ requests_table_rows[i][9] }}</td>
                                     <td style="text-align: center; width: 100px">
