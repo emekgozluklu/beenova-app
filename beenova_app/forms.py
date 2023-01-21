@@ -85,7 +85,7 @@ class CreateDataSourceForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired(), Length(min=3, max=32)],
                         render_kw={'class': 'form-control'})
 
-    description = TextAreaField('Description', validators=[DataRequired(), Length(min=3, max=500)],
+    description = TextAreaField('Description', validators=[DataRequired(), Length(min=3, max=10000)],
                                 render_kw={'class': 'form-control'})
 
     publish = BooleanField('Publish', render_kw={'class': 'form-control'})

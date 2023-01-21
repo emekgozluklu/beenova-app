@@ -77,7 +77,7 @@ class DBOperator:
         """
 
         result = self.db.execute(query, str(company_id)).fetchall()
-        return [(res["id"], res["first_name"] + res["last_name"]) for res in result]
+        return [(res["id"], " ".join([res["first_name"], res["last_name"]])) for res in result]
 
     # company operations
     def register_company(self, name, admin_id):
@@ -128,7 +128,7 @@ class DBOperator:
         if excluded_company_id is None:
             query = """
                 SELECT * FROM 
-                data_source ds join employee e join company c on ds.responsible_employee = e.id and  e.id = c.id;
+                data_source ds join employee e join company c on ds.responsible_employee = e.id and  e.id = c.id order by ds.created_at desc;
             """
 
             result = self.db.execute(query).fetchall()
@@ -136,7 +136,7 @@ class DBOperator:
             query = """
                 SELECT * FROM data_source ds join employee e join company c 
                 on ds.responsible_employee = e.id and e.id = c.id 
-                WHERE e.company!=?;
+                WHERE e.company!=? order by c.name, ds.created_at desc;
             """
 
             result = self.db.execute(query, (excluded_company_id,)).fetchall()
@@ -197,9 +197,7 @@ class DBOperator:
         self.db.execute(query, (requester, data_source, request_message, 0))
         self.db.commit()
 
-    def get_pending_requests_of_employee(self, user_id):
-        # pending requestler gösterilecek ancak request tablosundaki data_source_id'yi kullanarak data_source'a ulaşıcaz ve orayı kullanarak
-        # o tablodaki o data_sourcelar için admin olanı alıcaz
+    def get_pending_requests_of_company(self, company_id):
         query = """
             SELECT request.id AS request_id, request.requester, request.data_source, request.request_message, request.date_created, request.status,
             company.id AS company_id, company.name AS company_name,
@@ -209,10 +207,11 @@ class DBOperator:
             JOIN employee on request.requester = employee.id
             JOIN company on employee.company = company.id
             JOIN data_source on request.data_source = data_source.id
-            WHERE request.status=1 AND data_source.responsible_employee=?;
+            JOIN employee e2 on data_source.responsible_employee = e2.id
+            WHERE request.status=0 AND e2.company=?;
         """
 
-        result = self.db.execute(query, (user_id,)).fetchall()
+        result = self.db.execute(query, (company_id,)).fetchall()
         return [(
             res['request_id'],
             res['company_name'],
@@ -228,8 +227,8 @@ class DBOperator:
     def get_request_related_info_by_id(self, request_id):
         query = """
             SELECT request.id, request.request_message, request.date_created, 
-            company.name AS company_name, 
-            employee.first_name, employee.last_name, employee.email, employee.phone_number, employee.profile_photo,
+            company.name AS company_name, company.id AS company_id,
+            employee.id as emp_id, employee.first_name, employee.last_name, employee.email, employee.phone_number, employee.profile_photo,
             data_source.id AS data_source_id, data_source.title, data_source.description, data_source.subscription_fee,
             data_source_type.description AS data_source_type_description
             FROM request
@@ -243,7 +242,7 @@ class DBOperator:
         result = self.db.execute(query, (request_id,)).fetchone()
         return result
 
-    def accept_request(self, request_id, data_source_id, requester_id):
+    def accept_request(self, request_id, data_source_id, requester_id, company_id):
         update_request_query = """
             UPDATE request
             SET status=2
@@ -255,8 +254,14 @@ class DBOperator:
             VALUES (?, ?, ?);
         """
 
+        insert_subscription_query = """
+            INSERT INTO subscription (subscriber, data_source, request, subscription_started, subscription_ended, subscription_type, status)
+            VALUES (?, ?, ?, DATETIME('NOW'), null, 1, 1);
+        """
+
         self.db.execute(update_request_query, (request_id,))
         self.db.execute(insert_data_source_permission_query, (data_source_id, requester_id, 'read'))
+        self.db.execute(insert_subscription_query, (requester_id, data_source_id, request_id))
         self.db.commit()
 
     def reject_request(self, request_id):
@@ -295,19 +300,21 @@ class DBOperator:
     def get_data_sources_of_company_for_dashboard_table(self, company_id):
         # join data sources and employee tables and get data sources of company
         query = """
-            SELECT ds.id ds_id, ds.title title, ds.type_id type, e.first_name || ' ' || e.last_name maintainer,
-            ds.created_at created_at 
+            SELECT ds.id ds_id, ds.title ds_title, ds.type_id type, e.first_name || ' ' || e.last_name maintainer,
+            ds.created_at ds_created_at 
             FROM data_source ds join employee e on ds.responsible_employee = e.id 
-            where e.company = ?;
+            where e.company = ?
+            ORDER by ds.created_at desc;
         """
 
         result = self.db.execute(query, (str(company_id),)).fetchall()
         return [(
-                res["title"],
+                res['ds_id'],
+                res["ds_title"],
                 self.get_data_source_type_name(res["type"]),
-                len(self.get_active_users_of_data_source(res["ds_id"])),
+                self.get_active_users_of_data_source(res["ds_id"]),
                 res["maintainer"],
-                res["created_at"]
+                res["ds_created_at"]
                 ) for res in result]
 
     def get_data_sources_by_responsible_employee_id(self, employee_id):
@@ -319,17 +326,17 @@ class DBOperator:
         return [(
                 res["title"],
                 self.get_data_source_type_name(res["type_id"]),
-                len(self.get_active_users_of_data_source(res["id"])),
+                self.get_active_users_of_data_source(res["id"]),
                 res["created_at"]
         ) for res in result]
 
     def get_active_users_of_data_source(self, data_source_id):
         query = """
-            SELECT * FROM subscription WHERE data_source=? AND status=?;
+            SELECT COUNT(*) cnt FROM subscription WHERE data_source=? AND status=?;
         """
 
-        result = self.db.execute(query, (data_source_id, '1')).fetchall()
-        return list(result)
+        result = self.db.execute(query, (data_source_id, 1)).fetchone()["cnt"]
+        return result
 
     def get_data_source_id_by_file_save_path(self, data_root):
         query = """
@@ -369,7 +376,8 @@ class DBOperator:
 
     def check_if_user_has_permission(self, table_name, employee, method):
         query = """
-            SELECT * FROM data_source_permission WHERE data_source=? AND employee=? AND permission_type=?;
+            SELECT * FROM data_source_permission dsp JOIN data_source ds on dsp.data_source = ds.id 
+            WHERE ds.database_table_name=? AND employee=? AND permission_type=?;
         """
 
         result = self.db.execute(query, (table_name, employee, method)).fetchone()
@@ -423,8 +431,9 @@ class DBOperator:
 
     def get_number_of_subscriptions_of_company(self, company_id):
         query = """
-            SELECT count(*) cnt FROM subscription sub join data_source ds on sub.data_source = ds.id 
-                join employee e on ds.responsible_employee = e.id 
+            SELECT count(*) cnt FROM subscription sub 
+            join data_source ds on sub.data_source = ds.id 
+            join employee e on sub.subscriber = e.id 
                 WHERE e.company=?;
         """
 
@@ -449,10 +458,13 @@ class DBOperator:
 
     def get_number_of_pending_requests(self, company_id):
         query = """
-            SELECT count(*) cnt FROM request WHERE requester=? and status=?;
+            SELECT count(*) cnt FROM request req 
+            join data_source ds on req.data_source = ds.id 
+            join employee e on ds.responsible_employee = e.id
+            WHERE e.company=? and status=?;
         """
 
-        result = self.db.execute(query, (company_id, 1)).fetchone()['cnt']
+        result = self.db.execute(query, (company_id, 0)).fetchone()['cnt']
         return int(result)
 
     def get_dashboard_numbers(self, company_id):
@@ -464,32 +476,36 @@ class DBOperator:
         return {
             "num_data_sources": num_data_sources,
             "num_subscriptions": num_subscriptions,
-            "bandwidth": bandwidth,
+            "bandwidth": round(bandwidth, 2),
             "num_pending_requests": num_pending_requests
         }
 
     def get_subscriptions_of_company_for_dashboard_table(self, company_id):
         query = """
             SELECT 
+                ds.id as ds_id,
                 ds.title as data_source_title,
                 dst.name as data_source_type,
-                c.name as company_name,
+                c2.name as company_name,
                 ds.url_endpoint as data_source_url_endpoint,
                 sub.subscription_started as subscription_date
             FROM subscription sub 
                 join data_source ds on sub.data_source = ds.id 
-                join employee e on ds.responsible_employee = e.id 
+                join employee e on sub.subscriber = e.id 
                 join company c on e.company = c.id
+                join employee e2 on ds.responsible_employee = e2.id
+                join company c2 on c2.id = e2.company
                 join data_source_type dst on ds.type_id = dst.id
                 WHERE e.company=?;
         """
 
         result = self.db.execute(query, (company_id,)).fetchall()
         return [{
+            "data_source_id": res["ds_id"],
             "data_source_title": res["data_source_title"],
             "data_source_type": res["data_source_type"],
             "company_name": res["company_name"],
-            "data_source_url_endpoint": res["data_source_url_endpoint"],
+            "data_source_url_endpoint": (res["data_source_url_endpoint"]+"/read") if res["data_source_url_endpoint"] else 'Not generated yet!',
             "subscription_date": res["subscription_date"]
         } for res in result]
 
@@ -510,18 +526,8 @@ class DBOperator:
         return [{
             "data_source_title": res["data_source_title"],
             "data_source_type": res["data_source_type"],
-            "usage_amount": res["usage_amount"],
-            "usage_date": res["usage_date"]
+            "usage_amount": res["usage_amount"]
         } for res in result]
-
-
-
-
-
-
-
-
-
 
     def get_maintainer_of_data_source(self, data_source_id):
         query = """

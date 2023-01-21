@@ -24,3 +24,10 @@
 .navbar-logo {
     margin-right: 2rem;
 }
+
+.text-secondary {
+    white-space: pre-wrap;
+}
+img {
+    max-width: 200px;
+}

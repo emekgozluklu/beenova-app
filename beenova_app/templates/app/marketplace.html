@@ -18,7 +18,7 @@
 {% else %}
     {% for company in data.copy().keys() %}
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">{{ company|capitalize}}</h1>
+            <h1 class="h3 mb-0 text-gray-800">{{ company|title}}</h1>
         </div>
         <div class="container-fluid py-2">
             <div class="row d-flex flex-row flex-nowrap overflow-auto">

@@ -45,6 +45,7 @@ def data_source_detail(data_source_id):
     user_is_admin = data_source_id in user_managed_data_sources
     user_is_subscribed = data_source_id in user_subscribed_data_sources
 
+    data_source['url_endpoint'] += '/read'
     return render_template('app/data_source_detail.html',
                            data_source=data_source,
                            data_source_type=data_source_type,
@@ -216,7 +217,7 @@ def api_v1(table_name, method):
     method_valid = method in ['read', 'write', 'delete']
     user_has_permission = db_operator.check_if_user_has_permission(table_name, session.get('user_id'), method)
     args = request.args.to_dict()
-    if data_source_exists and method_valid:
+    if data_source_exists and method_valid and user_has_permission:
         result = APIRequestHandler(args, table_name, method).handle_request()
         if type(result) is tuple:
             return result
@@ -233,7 +234,7 @@ def user_account():
     ds_table_rows = db_operator.get_data_sources_by_responsible_employee_id(session.get('user_id'))
     user_info = {
         'name': user['first_name'] + ' ' + user['last_name'],
-        'profile_photo': url_for('static', filename='profile_pics/' + user['profile_photo']) ,
+        'profile_photo': url_for('static', filename='profile_pics/' + (user['profile_photo'] if user['profile_photo'] else 'default_user.jpg')),
         'username': user['username'],
         'email': user['email'],
         'phone_number': user['phone_number'],
@@ -247,7 +248,7 @@ def user_account():
 @login_required
 def pending_requests():
     db_operator = DBOperator()
-    requests_table_rows = db_operator.get_pending_requests_of_employee(session.get('user_id'))
+    requests_table_rows = db_operator.get_pending_requests_of_company(session.get('user_company_id'))
     requests_table_rows = explain_status(requests_table_rows)
     return render_template('app/pending_requests.html', requests_table_rows=requests_table_rows)
 
@@ -258,13 +259,13 @@ def edit_request(request_id):
     accept_form = AcceptRequestForm()
     reject_form = RejectRequestForm()
     user_info = db_operator.get_request_related_info_by_id(request_id)
-    photo_url = url_for('static', filename='profile_pics/' + user_info['profile_photo'])
+    photo_url = url_for('static', filename='profile_pics/' + (user_info['profile_photo'] if user_info['profile_photo'] else 'default_user.jpg'))
     # send query if accepted
-    requester_id = user_info['id']
+    requester_id = user_info['emp_id']
     data_source_id = user_info['data_source_id']
     
     if accept_form.validate_on_submit():
-        db_operator.accept_request(request_id, requester_id, data_source_id)
+        db_operator.accept_request(request_id, data_source_id, requester_id, user_info["company_id"])
         return redirect(url_for('app.pending_requests'))
 
     if reject_form.validate_on_submit():

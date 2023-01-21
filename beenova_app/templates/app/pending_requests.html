@@ -39,11 +39,11 @@
                                     <td id="data-created">{{ moment(requests_table_rows[i][7]).fromNow() }}</td>
                                     <td id="status">{{ requests_table_rows[i][8] }}</td>
                                     <td style="text-align: center; width: 100px">
-                                        <button  type="button" class="btn btn-primary answer-request-button" data-toggle="modal" data-target="#answerRequest">
+                                        <a style="color: white;" href="{{ url_for('app.edit_request', request_id=requests_table_rows[i][0]) }}"><button  type="button" class="btn btn-primary answer-request-button" data-toggle="modal" data-target="#answerRequest">
                                             <i class="fas fa-pen">
                                             </i>
-                                            <a style="color: white;" href="{{ url_for('app.edit_request', request_id=requests_table_rows[i][0]) }}">View</a>
-                                        </button>
+                                            View
+                                        </button></a>
                                     </td>
                                 </tr>
                             {%endfor%}

@@ -1,81 +1,144 @@
-/*admin user*/
+/*ADMIN*/
 INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
-VALUES ('admin', 'admin', 'admin', 'admin@admin.com', 1, '1251234', 'pbkdf2:sha256:260000$n2ojqTTcttDFIR2G$d4ce12d96b2684eef4645223c2fb3897e5a094fdee4f0e7c662c380cd4b255d1', 1, 1, 1, '2019-01-01 00:00:00', 1, 'instance/uploads/1/profile_photo.jpg');
+VALUES ('admin', 'admin', 'admin', 'admin@admin.com', 1, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 1, 1, 1, '2023-01-01 00:00:00', null, 'instance/uploads/1/pp1.jpg');
 
-/*employee users*/
+/*EMPLOYEES*/
+/*Company admins*/
 INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
-VALUES ('user', 'user', 'user', 'user@user.com', 1, '1251234', 'pbkdf2:sha256:260000$L7XVoYy8VtMZWtoU$43a595efacc21d58bf5129f154b9ce5cfa8edc5defb9d32bc8fb2ac09fab3412', 0, 1, 1, '2019-01-01 00:00:00', 1, 'instance/uploads/1/profile_photo2.jpg');
+VALUES ('Joe', 'Perier', 'JoePerier', 'joe@peri.com', 2, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 1, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/2/pp2.jpg');
 
 INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
-VALUES ('user2', 'user2', 'user2', 'user2@user2.com', 2, '1251234', 'pbkdf2:sha256:260000$4RjAkXY1sci95QQr$2c5ce371d17c175b7b47bf0e6b772de534de424dc54b9eca5fb6af11c0ffb60c', 0, 1, 1, '2019-01-01 00:00:00', 1, 'instance/uploads/1/profile_photo3.jpg');
+VALUES ('Angela', 'Putzmeisterer', 'AngelaPutzmeisterer', 'angela@putzmeister.com', 3, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 1, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/3/pp3.jpg');
 
-/*company*/
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Donald', 'Holcimer', 'DonaldHolcimer', 'donald@holcim.com', 4, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 1, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/4/pp4.jpg');
+
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Emanuel', 'Bögler', 'Emanuel Bögler', 'emanuel@maxbogl.com', 5, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 1, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/5/pp5.jpg');
+
+
+
+/*PERI users*/
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('John', 'Perier', 'JohnPerier', 'john@peri.com', 2, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 0, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/2/pp3.jpg');
+
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Lombard', 'Perier', 'LombardPerier', 'lombard@peri.com', 2, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 0, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/2/pp4.jpg');
+
+
+/*Putzmeister users*/
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Michael', 'Putzmeisterer', 'MichaelPutzmeisterer', 'michael@putzmeister.com', 3, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 0, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/3/pp3.jpg');
+
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Ignacio', 'Putzmeisterer', 'IgnacioPutzmeisterer', 'ignacio@putzmeister.com', 3, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 0, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/3/pp3.jpg');
+
+
+/*HOLCIM users*/
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Marlo', 'Holcimer', 'MarloHolcimer', 'marlo@holcim.com', 4, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 0, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/4/pp4.jpg');
+
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Bryan', 'Holcimer', 'BryanHolcimer', 'bryan@holcim.com', 4, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 0, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/4/pp4.jpg');
+
+
+/*Max Bögl users*/
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Marlo', 'Bögler', 'Marlo Bögler', 'marlo@maxbogl.com', 5, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 0, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/5/pp5.jpg');
+
+INSERT INTO employee (first_name, last_name, username, email, company, phone_number, password_hash, is_admin, is_company_admin, is_activated, created_at, created_by, profile_photo)
+VALUES ('Christi', 'Bögler', 'Christi Bögler', 'christi@maxbogl.com', 5, '+491111111111', 'pbkdf2:sha256:260000$7LK48Ms896Po9e5G$bc6e85d825eca89d90750a83cff5109de7fe5cfe360810f9e6679f1ed6706ce5', 0, 0, 1, '2023-01-01 00:00:00', 1, 'instance/uploads/5/pp5.jpg');
+
+
+/*COMPANIES*/
 INSERT INTO company (name, registered_at, admin_id)
-VALUES ('beenova', '2019-01-01 00:00:00', 1);
+VALUES ('Beenova', '2023-01-01 00:00:00', 1);
 
 INSERT INTO company (name, registered_at, admin_id)
-VALUES ('holcim', '2019-01-01 00:00:00', 2);
+VALUES ('PERI', '2023-01-01 00:00:00', 2);
 
 INSERT INTO company (name, registered_at, admin_id)
-VALUES ('peri', '2019-01-01 00:00:00', 3);
+VALUES ('Putzmeister', '2023-01-01 00:00:00', 3);
+
+INSERT INTO company (name, registered_at, admin_id)
+VALUES ('HOLCIM', '2023-01-01 00:00:00', 4);
+
+INSERT INTO company (name, registered_at, admin_id)
+VALUES ('Max Bögl', '2023-01-01 00:00:00', 5);
+
+
 
 /*data source type*/
 INSERT INTO data_source_type (name, description)
-VALUES ('csv', 'CSV File');
+VALUES ('CSV', 'CSV File');
 
 INSERT INTO data_source_type (name, description)
-VALUES ('json', 'JSON File');
+VALUES ('JSON', 'JSON File');
 
 INSERT INTO data_source_type (name, description)
-VALUES ('xml', 'XML File');
+VALUES ('SQL', 'SQL Database Table');
 
 INSERT INTO data_source_type (name, description)
-VALUES ('sql', 'SQL Database');
+VALUES ('Sensor (Real Time)', 'Real Time data from sensors');
 
-/*data source*/
+
+
+/*DATA SOURCES*/
+/*Beenova*/
 insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
-                              is_private, subscription_fee, responsible_employee, created_by)
-values ('Concrete Formula', 'Concrete Formula', '2023-01-01 00:00:00', '2023-01-01 00:00:00', 1, 1, 'instance/uploads/1/data_source_1.csv', 0, 0, 1, 1);
+                              is_private, subscription_fee, responsible_employee, created_by, database_table_name, url_endpoint)
+values ('Cement Manufacturing', '', '2023-01-18 09:14:13', '2023-01-18 09:14:13', 1, 1, '', 0, 0, 1, 1, '', '');
 
+
+/*HOLCIM*/
 insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
-                              is_private, subscription_fee, responsible_employee, created_by)
-values ('Pump Data/Moisture', 'Moisture content information coming from pumps.', '2022-11-22 00:00:00', '2022-11-22 00:00:00', 1, 2, 'instance/uploads/1/data_source_2.csv', 0, 0, 1, 1);
-
-insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
-                              is_private, subscription_fee, responsible_employee, created_by)
-values ('Concrete Intensity Experiment History', 'Experiment history of 20 years.', '2019-01-01 00:00:00', '2019-01-01 00:00:00', 1, 3, 'instance/uploads/1/data_source_3.csv', 0, 0, 1, 1);
-
-insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
-                              is_private, subscription_fee, responsible_employee, created_by)
-values ('Mock Data 1', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis pellentesque, lectus a luctus sagittis, magna eros auctor augue, vitae maximus dui arcu ac leo. Ut fermentum sagittis eros vulputate porta. Cras pulvinar eget augue ac dignissim. Vivamus id posuere augue, vel mattis eros. Curabitur ac odio vitae ante congue vestibulum. Morbi consectetur in lacus sit amet consequat. Aenean tristique lacinia dapibus. Nam viverra risus diam, vitae dapibus turpis hendrerit sit amet.', '2019-01-01 00:00:00', '2019-01-01 00:00:00', 1, 3, 'instance/uploads/1/data_source_3.csv', 0, 0, 1, 1);
-
+                              is_private, subscription_fee, responsible_employee, created_by, database_table_name, url_endpoint)
+values ('CO2 Emissions of Products', '', '2023-01-18 09:14:13', '2023-01-18 09:14:13', 1, 1, '', 0, 0, 4, 4, '', '');
 
 insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
-                              is_private, subscription_fee, responsible_employee, created_by)
-values ('Mock Data 2', 'Suspendisse at magna in lectus rhoncus posuere ac sed nunc. Integer tincidunt ipsum quis commodo gravida. Vestibulum pharetra nisl elementum mauris rutrum, nec vestibulum nisl elementum. In lobortis quam at porta suscipit. Duis interdum at libero non rhoncus. Suspendisse potenti. Nunc pellentesque accumsan aliquam. Quisque magna lorem, faucibus ac interdum et, porttitor ac lectus.', '2019-01-01 00:00:00', '2019-01-01 00:00:00', 1, 1, 'instance/uploads/1/data_source_3.csv', 0, 0, 1, 1);
+                              is_private, subscription_fee, responsible_employee, created_by, database_table_name, url_endpoint)
+values ('Silo stocks', 'Up to date silo stocks.', '2023-01-15 09:14:13', '2023-01-18 09:14:13', 1, 1, '', 0, 0, 4, 4, '', '');
 
+
+/*PERI*/
+insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
+                              is_private, subscription_fee, responsible_employee, created_by, database_table_name, url_endpoint)
+values ('Projects (Active and Historical)', '', '2023-01-18 09:14:13', '2023-01-18 09:14:13', 1, 3, '', 0, 0, 2, 2, '', '');
 
 insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
-                              is_private, subscription_fee, responsible_employee, created_by)
-values ('Mock Data 3', 'In hac habitasse platea dictumst. Curabitur enim enim, tempus a rutrum sed, venenatis et eros. Integer magna mi, molestie et risus quis, gravida ullamcorper ex. Ut accumsan condimentum venenatis. Vestibulum congue feugiat ante, at iaculis justo pretium eget. Nullam et dui lorem. Cras vitae sem in quam pellentesque porttitor. Integer dapibus justo eget metus aliquam interdum.', '2019-01-01 00:00:00', '2019-01-01 00:00:00', 1, 1, 'instance/uploads/1/data_source_3.csv', 0, 0, 1, 1);
+                              is_private, subscription_fee, responsible_employee, created_by, database_table_name, url_endpoint)
+values ('Concrete Humidity by Time', 'Real time data from sensors in the construction site. Data includes timestamp and the humidity of the concrete.', '2023-01-18 09:14:13', '2023-01-18 09:14:13', 1, 4, '', 0, 0, 2, 2, '', '');
 
 
+/*Max Bögl*/
 insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
-                              is_private, subscription_fee, responsible_employee, created_by)
-values ('Mock Data 4', 'Aliquam commodo mauris urna, non lacinia sapien auctor et. Maecenas mattis facilisis laoreet. Quisque viverra sodales purus, vestibulum sollicitudin ex lacinia nec. Maecenas faucibus, neque quis dignissim lacinia, nisl diam rutrum lectus, ut convallis nulla erat ornare ex. Etiam feugiat tellus augue, quis dignissim orci tristique quis. Vestibulum eu egestas arcu. Vestibulum ut massa rutrum, vulputate dui vitae, imperdiet turpis.', '2019-01-01 00:00:00', '2019-01-01 00:00:00', 1, 1, 'instance/uploads/1/data_source_3.csv', 0, 0, 1, 1);
+                              is_private, subscription_fee, responsible_employee, created_by, database_table_name, url_endpoint)
+values ('Construction Site Sensor Data', 'Collection of datas point collected from construction site. Filter by project_id and sensor_id to get the result of a specific sensor by time.', '2023-01-18 09:14:13', '2023-01-18 09:14:13', 1, 1, '', 0, 0, 5, 5, '', '');
 
-/*subscriptions*/
-insert into main.subscription (subscriber, data_source, request, subscription_type, status)
-values (1, 1, 1, 1, 1);
 
-insert into main.subscription (subscriber, data_source, request, subscription_type, status)
-values (1, 2, 1, 1, 1);
+/*Putzmeister*/
+insert into main.data_source (title, description, created_at, published_at, is_published, type_id, data_root,
+                              is_private, subscription_fee, responsible_employee, created_by, database_table_name, url_endpoint)
+values ('Concrete Humidity in Mixer', '', '2023-01-18 09:14:13', '2023-01-18 09:14:13', 1, 1, '', 0, 0, 3, 3, '', '');
 
-insert into main.subscription (subscriber, data_source, request, subscription_type, status)
-values (2, 2, 1, 1, 1);
 
-/* data source permission types and data source permissions */
+INSERT INTO data_usage (data_source, data_user, start_time, end_time, usage_amount, subscription)
+VALUES (1, 2, '2023-01-01 00:00:00', '2023-01-05 00:00:00', 735142, null);
 
-insert into main.data_source_permission (data_source, employee, permission_type) values (1, 1, 'read');
-insert into main.data_source_permission (data_source, employee, permission_type) values (1, 2, 'read');
+INSERT INTO data_usage (data_source, data_user, start_time, end_time, usage_amount, subscription)
+VALUES (1, 3, '2023-01-01 00:00:00', '2023-01-05 00:00:00', 735142, null);
 
+INSERT INTO data_usage (data_source, data_user, start_time, end_time, usage_amount, subscription)
+VALUES (1, 4, '2023-01-01 00:00:00', '2023-01-05 00:00:00', 735142, null);
+
+INSERT INTO data_usage (data_source, data_user, start_time, end_time, usage_amount, subscription)
+VALUES (2, 2, '2023-01-01 00:00:00', '2023-01-05 00:00:00', 735142, null);
+
+INSERT INTO data_usage (data_source, data_user, start_time, end_time, usage_amount, subscription)
+VALUES (2, 2, '2023-01-01 00:00:00', '2023-01-05 00:00:00', 735142, null);
+
+INSERT INTO data_usage (data_source, data_user, start_time, end_time, usage_amount, subscription)
+VALUES (3, 2, '2023-01-01 00:00:00', '2023-01-05 00:00:00', 735142, null);
+
+INSERT INTO data_usage (data_source, data_user, start_time, end_time, usage_amount, subscription)
+VALUES (4, 2, '2023-01-01 00:00:00', '2023-01-05 00:00:00', 735142, null);

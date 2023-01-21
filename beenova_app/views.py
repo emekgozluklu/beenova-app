@@ -1,10 +1,12 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, session
 from beenova_app.auth import logout_required
 from beenova_app.forms import RequestDemoForm
 from beenova_app.db_queries import DBOperator
 
 
 def index():
+    if session.get('user_id'):
+        return redirect(url_for('app.company_dashboard'))
     return render_template("index.html")
 
 

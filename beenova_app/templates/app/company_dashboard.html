@@ -113,21 +113,21 @@ Dashboard
                             <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
                         <tr role="row">
-                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Name</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Type</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Active Users</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Maintainer</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Created At</th>
+                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 12rem;" aria-sort="ascending" >Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 5rem;">Type</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 3rem;">Active Users</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 5rem;">Maintainer</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 4rem;">Created At</th>
                         </tr>
                     </thead>
                         <tbody>
                                 {%for i in range(data['data_sources']|length)%}
                                     <tr class="{{'odd' if i%2 == 0 else 'even' }}">
-                                        <td class="sorting_1">{{ data['data_sources'][i][0] }}</td>
-                                        <td>{{ data['data_sources'][i][1] }}</td>
+                                        <td class="sorting_1"><a href={{ url_for('app.data_source_detail', data_source_id=data['data_sources'][i][0]) }}> {{ data['data_sources'][i][1]|truncate(50) }} </a></td>
                                         <td>{{ data['data_sources'][i][2] }}</td>
                                         <td>{{ data['data_sources'][i][3] }}</td>
-                                        <td>{{ moment(data['data_sources'][i][4]).fromNow() }}</td>
+                                        <td>{{ data['data_sources'][i][4] }}</td>
+                                        <td>{{ moment(data['data_sources'][i][5]).fromNow() }}</td>
                                     </tr>
                                 {%endfor%}
                         </tbody>
@@ -163,18 +163,18 @@ Dashboard
                             <table class="table table-bordered dataTable" id="dataTable" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
                                 <thead>
                         <tr role="row">
-                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 8rem;" aria-sort="ascending" >Source</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Type</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">Provider</th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 9rem;">API Endpoint </th>
-                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 1rem;">Subscription Date</th>
+                            <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 12rem;" aria-sort="ascending" >Source</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 5rem;">Type</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 5rem;">Provider</th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 5rem;">API Endpoint </th>
+                            <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 2rem;">Subscription Date</th>
                             <th class="sorting" tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 1rem;">Edit</th>
                         </tr>
                     </thead>
                         <tbody>
                                 {%for i in range(data['subscriptions']|length)%}
                                     <tr class="{{'odd' if i%2 == 0 else 'even' }}">
-                                        <td class="sorting_1">{{ data['subscriptions'][i]['data_source_title'] }}</td>
+                                        <td class="sorting_1"><a href={{ url_for('app.data_source_detail', data_source_id=data['subscriptions'][i]['data_source_id'])}}> {{ data['subscriptions'][i]['data_source_title']|truncate(50) }}</a></td>
                                         <td>{{ data['subscriptions'][i]['data_source_type'] }}</td>
                                         <td>{{ data['subscriptions'][i]['company_name'] }}</td>
                                         <td>{{ data['subscriptions'][i]['data_source_url_endpoint'] }}</td>
